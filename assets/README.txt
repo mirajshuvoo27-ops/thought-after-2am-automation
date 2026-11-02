@@ -1,7 +1,5 @@
-Thought After 2AM - extracted sprite references
+Thought After 2AM rigging reference pack
 
-These are crops from the character sheet, not clean transparent rig layers.
-They can be used for expression/pose swapping and visual references.
-They are NOT independently rigged body parts and do not provide reliable
-automatic lip-sync by themselves. For true skeletal animation, redraw/trace
-the character as separate aligned transparent layers in a 2D rigging tool.
+These PNGs are cropped sprite references from one generated atlas. Transparent pixels are retained where present.
+Important: these are NOT yet production-ready skeletal rig layers. Some crops may include neighboring artwork or incomplete edges and need manual cleanup, alignment, and repainting before rigging.
+Next production step: prepare clean aligned head/torso/upper-arm/forearm/hand/thigh/shin/foot layers, then rig in a 2D animation tool.
