@@ -1,4 +1,3 @@
-
 import os
 import json
 import asyncio
@@ -15,205 +14,83 @@ from googleapiclient.http import MediaFileUpload
 
 ROOT = Path(".")
 OUTPUT = ROOT / "output"
+ASSETS = ROOT / "assets"
 OUTPUT.mkdir(exist_ok=True)
 
 WIDTH, HEIGHT = 1080, 1920
-VOICE = "en-US-AndrewNeural"
+FPS = 30
+POSE_FILES = [
+    "01_main_host.png",
+    "02_thinking.png",
+    "03_speaking_gesture.png",
+    "04_adjusting_sunglasses.png",
+    "05_relaxed_pose.png",
+    "06_thumbs_up.png",
+    "07_explaining.png",
+    "08_phone_pose.png",
+]
+VOICE_OPTIONS = ["en-US-AndrewNeural", "en-US-AriaNeural"]
 
 
 def run(command):
     subprocess.run(command, check=True)
 
 
-def make_scene(text, index):
-    image = Image.new("RGB", (WIDTH, HEIGHT), (12, 17, 35))
-    draw = ImageDraw.Draw(image)
+def get_font(size, bold=True):
+    candidates = [
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf" if bold
+        else "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+        "/usr/share/fonts/truetype/liberation2/LiberationSans-Bold.ttf",
+    ]
+    for candidate in candidates:
+        if Path(candidate).exists():
+            return ImageFont.truetype(candidate, size)
+    return ImageFont.load_default()
 
-    # Background decoration
-    for y in range(HEIGHT):
-        shade = int(18 + 20 * y / HEIGHT)
-        draw.line((0, y, WIDTH, y), fill=(shade, shade + 3, shade + 22))
 
-    font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
-    font = ImageFont.truetype(font_path, 68)
-    small = ImageFont.truetype(font_path, 32)
-
-    draw.text((75, 100), "THOUGHT AFTER 2AM",
-              font=small, fill=(130, 170, 255))
-
-    words = text.split()
-    lines = []
-    line = ""
-
+def wrap_text(draw, text, font, max_width):
+    words = str(text).split()
+    lines, current = [], ""
     for word in words:
-        test = (line + " " + word).strip()
-        if draw.textbbox((0, 0), test, font=font)[2] > 900:
-            lines.append(line)
-            line = word
+        trial = (current + " " + word).strip()
+        if draw.textbbox((0, 0), trial, font=font)[2] <= max_width:
+            current = trial
         else:
-            line = test
-
-    if line:
-        lines.append(line)
-
-    line_height = 100
-    total_height = len(lines) * line_height
-    y = (HEIGHT - total_height) // 2
-
-    for line in lines:
-        box = draw.textbbox((0, 0), line, font=font)
-        x = (WIDTH - (box[2] - box[0])) // 2
-        draw.text((x, y), line, font=font, fill="white")
-        y += line_height
-
-    draw.text((75, 1770), "FOLLOW FOR MORE",
-              font=small, fill=(130, 170, 255))
-
-    path = OUTPUT / f"scene_{index}.png"
-    image.save(path)
-    return path
+            if current:
+                lines.append(current)
+            current = word
+    if current:
+        lines.append(current)
+    return lines or [""]
 
 
+def make_scene(text, index, pose_name=None):
+    # Vertical navy-to-blue gradient background.
+    image = Image.new("RGB", (WIDTH, HEIGHT))
+    pixels = image.load()
+    for y in range(HEIGHT):
+        t = y / max(1, HEIGHT - 1)
+        color = (
+            int(7 + 10 * t),
+            int(13 + 17 * t),
+            int(34 + 34 * t),
+        )
+        for x in range(WIDTH):
+            pixels[x, y] = color
 
-async def make_audio(text, index):
-    path = OUTPUT / f"audio_{index}.mp3"
+    draw = ImageDraw.Draw(image)
+    title_font = get_font(42)
+    label_font = get_font(28)
+    text_font = get_font(57)
 
-    voices = ["en-US-AndrewNeural", "en-US-AriaNeural"]
+    # Header and subtle accent.
+    draw.rounded_rectangle((54, 58, WIDTH - 54, 142), radius=28,
+                           fill=(17, 31, 67), outline=(55, 100, 190), width=3)
+    draw.text((82, 78), "THOUGHT AFTER 2AM", font=title_font,
+              fill=(226, 235, 255))
+    draw.ellipse((WIDTH - 125, 83, WIDTH - 91, 117), fill=(255, 194, 40))
 
-    for voice in voices:
-        for attempt in range(3):
-            try:
-                communicate = edge_tts.Communicate(text, voice)
-                await communicate.save(str(path))
-
-                if path.exists() and path.stat().st_size > 1000:
-                    return path
-
-            except Exception as error:
-                print(
-                    f"TTS attempt {attempt + 1} failed: {error}"
-                )
-
-            await asyncio.sleep(5 * (attempt + 1))
-
-    raise RuntimeError(f"Could not generate audio for scene {index}")
-
-
-
-def create_video(scenes):
-    clips = []
-
-    for i, scene in enumerate(scenes):
-        image = make_scene(scene, i)
-        audio = OUTPUT / f"audio_{i}.mp3"
-
-        asyncio.run(make_audio(scene, i))
-
-        clip = OUTPUT / f"clip_{i}.mp4"
-
-        run([
-            "ffmpeg", "-y",
-            "-loop", "1",
-            "-i", str(image),
-            "-i", str(audio),
-            "-vf",
-            "scale=1080:1920,format=yuv420p,fade=t=in:st=0:d=0.4",
-            "-c:v", "libx264",
-            "-preset", "ultrafast",
-            "-tune", "stillimage",
-            "-c:a", "aac",
-            "-b:a", "128k",
-            "-shortest",
-            "-movflags", "+faststart",
-            str(clip)
-        ])
-
-        clips.append(clip)
-
-    concat_file = OUTPUT / "clips.txt"
-
-    with open(concat_file, "w") as f:
-        for clip in clips:
-            f.write(f"file '{clip.resolve()}'\n")
-
-    final_video = OUTPUT / "thought_after_2am.mp4"
-
-    run([
-        "ffmpeg", "-y",
-        "-f", "concat",
-        "-safe", "0",
-        "-i", str(concat_file),
-        "-c", "copy",
-        str(final_video)
-    ])
-
-    return final_video
-
-
-def upload_video(video_path, data):
-    credentials = Credentials(
-        token=None,
-        refresh_token=os.environ["YOUTUBE_REFRESH_TOKEN"],
-        token_uri="https://oauth2.googleapis.com/token",
-        client_id=os.environ["YOUTUBE_CLIENT_ID"],
-        client_secret=os.environ["YOUTUBE_CLIENT_SECRET"],
-        scopes=["https://www.googleapis.com/auth/youtube.upload"]
-    )
-
-    credentials.refresh(
-        __import__("google.auth.transport.requests",
-                   fromlist=["Request"]).Request()
-    )
-
-    youtube = build("youtube", "v3", credentials=credentials)
-
-    body = {
-        "snippet": {
-            "title": data["title"][:100],
-            "description": data["description"],
-            "tags": data.get("tags", []),
-            "categoryId": "27"
-        },
-        "status": {
-            "privacyStatus": "private",
-            "selfDeclaredMadeForKids": False
-        }
-    }
-
-    media = MediaFileUpload(
-        str(video_path),
-        mimetype="video/mp4",
-        resumable=True
-    )
-
-    request = youtube.videos().insert(
-        part="snippet,status",
-        body=body,
-        media_body=media
-    )
-
-    response = None
-    while response is None:
-        status, response = request.next_chunk()
-        if status:
-            print(f"Upload progress: {int(status.progress() * 100)}%")
-
-    print("Video uploaded:", response["id"])
-
-
-def main():
-    with open("video.json", "r", encoding="utf-8") as f:
-        data = json.load(f)
-
-    scenes = data["scenes"]
-
-    if not scenes:
-        raise ValueError("No scenes found in video.json")
-
-    video = create_video(scenes)
-    upload_video(video, data)
-
-
-if __name__ == "__main__":
-    main()
-
+    # Select a reusable character pose for this scene.
+    selected = pose_name or POSE_FILES[index % len(POSE_FILES)]
+    pose_path = ASSETS / selected
+    if not pose_path.exists():
