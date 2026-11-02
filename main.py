@@ -74,11 +74,30 @@ def make_scene(text, index):
     return path
 
 
+
 async def make_audio(text, index):
     path = OUTPUT / f"audio_{index}.mp3"
-    communicate = edge_tts.Communicate(text, VOICE)
-    await communicate.save(str(path))
-    return path
+
+    voices = ["en-US-AndrewNeural", "en-US-AriaNeural"]
+
+    for voice in voices:
+        for attempt in range(3):
+            try:
+                communicate = edge_tts.Communicate(text, voice)
+                await communicate.save(str(path))
+
+                if path.exists() and path.stat().st_size > 1000:
+                    return path
+
+            except Exception as error:
+                print(
+                    f"TTS attempt {attempt + 1} failed: {error}"
+                )
+
+            await asyncio.sleep(5 * (attempt + 1))
+
+    raise RuntimeError(f"Could not generate audio for scene {index}")
+
 
 
 def create_video(scenes):
