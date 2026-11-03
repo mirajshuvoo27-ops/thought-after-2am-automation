@@ -1,3 +1,8 @@
-Thought After 2AM — extracted sprite parts v1
+Thought After 2AM — corrected sprite crops v2
 
-These are automatically cropped sprite references with edge-connected checkerboard background removed. They are not a completed skeletal rig: the original sheet is a sprite atlas, some poses are complete static figures, and joints are not yet reconstructed/overlapped for deformation. Inspect edges before use. True rigging requires aligned layers and bone/joint setup in a 2D animation application.
+These crops were made from the actual 1254x1254 mascot source sheet.
+They are accurate visual reference crops, NOT yet independent transparent
+rig layers. The checkerboard pattern is baked into the source RGB image,
+so it has not been falsely labelled as transparency. Before skeletal rigging,
+the background must be removed carefully, parts must be aligned on a shared
+canvas, and hidden joint overlap must be repainted.
