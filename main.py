@@ -235,8 +235,8 @@ class SceneRenderer:
             if len(lines) > 4:
                 f = font(26)
                 lines = wrap(self._measure, shown, f, W - 112)
-            if len(lines) > 4:
-                raise ValueError(f"Subtitle needs {len(lines)} lines; shorten this scene instead of shrinking text further.")
+            if len(lines) > 5:
+                raise ValueError(f"Subtitle needs {len(lines)} lines; shorten this scene to keep captions comfortably readable.")
             self._layouts["full"] = (f, lines)
         return self._layouts["full"]
  
@@ -262,7 +262,7 @@ class SceneRenderer:
         # on screen for the entire spoken scene, instead of making viewers chase words.
         progress = min(1, (n + 1) / max(1, self.frames))
         f, lines = self._layout()
-        line_h = 52
+        line_h = 44 if len(lines) >= 5 else 50
         block_h = len(lines) * line_h + 64
         top = H // 2 + 95
         d.rounded_rectangle((28, top, W - 28, top + block_h), radius=28, fill=(3, 9, 24, 232), outline=(*accent, 245), width=3)
