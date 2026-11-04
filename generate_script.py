@@ -236,11 +236,20 @@ def generate(slot, entries, use_bank=True):
     fact = str(bank_topic["fact"]).strip()
     topic = str(bank_topic["topic"]).strip()
     sentences = [x.strip() for x in re.split(r"(?<=[.!?])\s+", fact) if x.strip()]
-    hook = topic.split(":")[0].strip()
+    hook = re.sub(r"\\([^)]*\\)", "", topic.split(":")[0]).strip()
+    hook = re.sub(r"[#*_\\[\\]{}<>]", "", hook)
+    hook = re.sub(r"\\s+", " ", hook).strip(" .,:;!?")
     if not hook or len(hook.split()) > MAX_HOOK_WORDS:
-        hook = "Here's a psychology detail worth thinking about."
+        hook = "Here's a psychology detail worth thinking about"
+    clean_sentences = []
+    for sentence in sentences:
+        sentence = re.sub(r"\\([^)]*\\)", "", sentence)
+        sentence = re.sub(r"[#*_\\[\\]{}<>]", "", sentence)
+        sentence = re.sub(r"\\s+", " ", sentence).strip()
+        if sentence:
+            clean_sentences.append(sentence)
     scenes = [{"text": hook}]
-    scenes.extend({"text": x} for x in sentences[:MAX_SCENES - 2])
+    scenes.extend({"text": x} for x in clean_sentences[:MAX_SCENES - 2])
     scenes.append({"text": "That is the key finding. What part of it makes you think differently?"})
     raw = {
         "topic": bank_topic["id"],
