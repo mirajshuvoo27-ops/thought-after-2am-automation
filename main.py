@@ -223,17 +223,22 @@ class SceneRenderer:
         self._measure = ImageDraw.Draw(Image.new("RGBA", (8, 8)))
         self._layouts = {}
  
-    def _layout(self, count):
-        """Wrapped subtitle lines for the first `count` words; cached because many frames share one count."""
-        if count not in self._layouts:
-            shown = " ".join(self.words[:count])
+    def _layout(self):
+        """Lay out the complete scene caption once; keep it readable for the full narration."""
+        if "full" not in self._layouts:
+            shown = " ".join(self.words)
             f = font(34)
-            lines = wrap(self._measure, shown, f, W - 100)
+            lines = wrap(self._measure, shown, f, W - 112)
+            if len(lines) > 3:
+                f = font(30)
+                lines = wrap(self._measure, shown, f, W - 112)
             if len(lines) > 4:
-                f = font(29)
-                lines = wrap(self._measure, shown, f, W - 100)
-            self._layouts[count] = (f, lines)
-        return self._layouts[count]
+                f = font(26)
+                lines = wrap(self._measure, shown, f, W - 112)
+            if len(lines) > 4:
+                raise ValueError(f"Subtitle needs {len(lines)} lines; shorten this scene instead of shrinking text further.")
+            self._layouts["full"] = (f, lines)
+        return self._layouts["full"]
  
     def frame(self, n):
         t = n / FPS
@@ -253,15 +258,15 @@ class SceneRenderer:
         draw_icon(d, self.kind, W // 2, 410, t, accent, accent2)
         # Topic label above subtitle
         d.text((W // 2, 650), self.label, font=font(20), fill=(*accent, 255), anchor="mm")
-        # Centered subtitle block; words reveal progressively with narration.
+        # Full-sentence subtitles: show the complete phrase immediately and hold it
+        # on screen for the entire spoken scene, instead of making viewers chase words.
         progress = min(1, (n + 1) / max(1, self.frames))
-        count = min(len(self.words), max(1, int(progress * len(self.words)) + 1))
-        f, lines = self._layout(count)
-        line_h = 48
-        block_h = len(lines) * line_h + 54
+        f, lines = self._layout()
+        line_h = 52
+        block_h = len(lines) * line_h + 64
         top = H // 2 + 95
-        d.rounded_rectangle((35, top, W - 35, top + block_h), radius=26, fill=(3, 9, 24, 220), outline=(*accent, 230), width=3)
-        y = top + 27 + (block_h - 54 - len(lines) * line_h) // 2 + (line_h // 2 if CENTER_SUBTITLE_IN_CARD else 0)
+        d.rounded_rectangle((28, top, W - 28, top + block_h), radius=28, fill=(3, 9, 24, 232), outline=(*accent, 245), width=3)
+        y = top + 32 + (block_h - 64 - len(lines) * line_h) // 2
         for line in lines:
             d.text((W // 2 + 2, y + 3), line, font=f, fill=(0, 0, 0, 255), anchor="mm", stroke_width=2, stroke_fill=(0, 0, 0, 255))
             d.text((W // 2, y), line, font=f, fill=(255, 255, 255, 255), anchor="mm", stroke_width=1, stroke_fill=(15, 20, 40, 255))
