@@ -275,7 +275,7 @@ def generate(slot, entries, use_bank=True):
     hook_source = topic.split(":")[0].strip()
     hook_source = re.sub(r"^why\\s+", "", hook_source, flags=re.I)
     hook_source = hook_source.rstrip(" .!?")
-    hook = ("Why does " + hook_source.lower() + "?") if hook_source else "A surprising psychology finding"
+    hook = ("Ever wonder why " + hook_source.lower() + "?") if hook_source else "A surprising psychology finding"
     if len(hook.split()) > MAX_HOOK_WORDS:
         hook = "What does this reveal about the human mind?"
 
