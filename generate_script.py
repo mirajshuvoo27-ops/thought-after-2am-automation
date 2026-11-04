@@ -229,55 +229,25 @@ def build_video(raw, slot, bank_topic, entries, model):
 # --------------------------------------------------------------------------- orchestration
 
 def _plain_text(value):
-    """Remove parenthetical notes and markup from narration."""
+    """Remove parenthetical notes and visual markup from narration."""
     value = re.sub(r"\([^)]*\)", "", str(value))
     value = re.sub(r"[#*_\[\]{}<>]", "", value)
     return re.sub(r"\s+", " ", value).strip()
 
 
-def _split_narration(fact, max_words=20):
-    """Create readable scene chunks without cutting at arbitrary word positions."""
+def _split_narration(fact, max_words=22):
+    """Keep complete sentences intact; reject facts that cannot fit a scene."""
     fact = _plain_text(fact)
     sentences = [x.strip() for x in re.split(r"(?<=[.!?])\s+", fact) if x.strip()]
-    chunks = []
-    for sentence in sentences:
-        if len(sentence.split()) <= max_words:
-            chunks.append(sentence)
-            continue
+    too_long = [x for x in sentences if len(x.split()) > max_words]
+    if too_long:
+        raise RuntimeError(
+            "A verified topic-bank sentence exceeds the 22-word scene limit. "
+            "Shorten that source-backed sentence in topics_bank.json; it was not cut."
+        )
+    return sentences
 
-        # Split long sentences only at punctuation/conjunction boundaries.
-        parts = re.split(r"(?<=[,;:])\s+|\s+(?=(?:and|but|while|because|which|although|so)\b)", sentence, flags=re.I)
-        current = ""
-        for part in parts:
-            part = part.strip()
-            if not part:
-                continue
-            candidate = (current + " " + part).strip()
-            if current and len(candidate.split()) > max_words:
-                chunks.append(current.rstrip(" ,;:"))
-                current = part
-            else:
-                current = candidate
-        if current:
-            chunks.append(current.rstrip(" ,;:"))
 
-    # A final safety check: if a clause is still long, split at the nearest
-    # conjunction, never by blindly slicing the sentence into fixed word counts.
-    final = []
-    for chunk in chunks:
-        words = chunk.split()
-        if len(words) <= max_words:
-            final.append(chunk)
-            continue
-        cut = max_words
-        for i in range(min(max_words, len(words) - 1), max(8, max_words - 7), -1):
-            if words[i].lower().strip(" ,;:") in {"and", "but", "while", "because", "which", "although", "so"}:
-                cut = i
-                break
-        final.append(" ".join(words[:cut]).rstrip(" ,;:"))
-        final.append(" ".join(words[cut:]).lstrip(" ,;:"))
-    return [x for x in final if x]
- 
 def generate(slot, entries, use_bank=True):
     """Build a concise, source-faithful script from one unused vetted topic."""
     bank_topic = pick_bank_topic(entries)
@@ -287,12 +257,15 @@ def generate(slot, entries, use_bank=True):
     topic = _plain_text(bank_topic["topic"])
     fact = _plain_text(bank_topic["fact"])
     # Topic-specific question hook, derived only from the vetted topic wording.
-    hook_source = topic.split(":")[0].strip()
-    hook_source = re.sub(r"^why\\s+", "", hook_source, flags=re.I)
-    hook_source = hook_source.rstrip(" .!?")
-    hook = ("Ever wonder why " + hook_source.lower() + "?") if hook_source else "A surprising psychology finding"
+    hook_source = topic.split(":")[0].strip().rstrip(" .!?")
+    starts_with_why = bool(re.match(r"^why\\s+", hook_source, flags=re.I))
+    hook_source = re.sub(r"^why\\s+", "", hook_source, flags=re.I).strip()
+    if hook_source:
+        hook = ("Ever wonder why " if starts_with_why else "Ever wonder about ") + hook_source.lower() + "?"
+    else:
+        hook = "A psychology question worth thinking about"
     if len(hook.split()) > MAX_HOOK_WORDS:
-        hook = "What does this reveal about the human mind?"
+        hook = "What can psychology teach us?"
 
     fact_scenes = _split_narration(fact)
     scenes = [{"text": hook}]
