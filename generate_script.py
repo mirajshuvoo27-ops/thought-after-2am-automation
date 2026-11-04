@@ -228,26 +228,63 @@ def build_video(raw, slot, bank_topic, entries, model):
 
 # --------------------------------------------------------------------------- orchestration
 
+def _plain_text(value):
+    """Remove parenthetical notes and markup from narration."""
+    value = re.sub(r"\\([^)]*\\)", "", str(value))
+    value = re.sub(r"[#*_\\[\\]{}<>]", "", value)
+    return re.sub(r"\\s+", " ", value).strip()
+
+
+def _split_narration(fact, max_words=20):
+    """Split at sentence/clause boundaries; never cut a sentence at an arbitrary word."""
+    chunks = []
+    for sentence in re.split(r"(?<=[.!?])\\s+", fact.strip()):
+        sentence = _plain_text(sentence)
+        if not sentence:
+            continue
+        if len(sentence.split()) <= max_words:
+            chunks.append(sentence)
+            continue
+        # Prefer natural clause boundaries when a source sentence is long.
+        parts = re.split(r"(?<=,)|(?<=;)|(?<=:)\\s+", sentence)
+        current = ""
+        for part in parts:
+            part = part.strip()
+            if not part:
+                continue
+            candidate = (current + " " + part).strip()
+            if current and len(candidate.split()) > max_words:
+                chunks.append(current)
+                current = part
+            else:
+                current = candidate
+        if current:
+            chunks.append(current)
+    return chunks
+
+
 def generate(slot, entries, use_bank=True):
-    """Build a conservative script from one unused, pre-vetted topic. No external AI/API."""
+    """Build a concise, source-faithful script from one unused vetted topic."""
     bank_topic = pick_bank_topic(entries)
     if not bank_topic:
-        raise RuntimeError("Vetted topic bank exhausted. Add more verified topics to topics_bank.json; refusing to invent facts.")
-    fact = str(bank_topic["fact"]).strip()
-    topic = str(bank_topic["topic"]).strip()
-    sentences = [x.strip() for x in re.split(r"(?<=[.!?])\s+", fact) if x.strip()]
-    # Use a plain-text hook; topic names may contain parentheses or markup.
-    hook = "A surprising psychology finding"
-    clean_sentences = []
-    for sentence in sentences:
-        sentence = re.sub(r"\\([^)]*\\)", "", sentence)
-        sentence = re.sub(r"[#*_\\[\\]{}<>]", "", sentence)
-        sentence = re.sub(r"\\s+", " ", sentence).strip()
-        if sentence:
-            clean_sentences.append(sentence)
+        raise RuntimeError("Vetted topic bank exhausted. Add more verified topics; refusing to invent facts.")
+
+    topic = _plain_text(bank_topic["topic"])
+    fact = _plain_text(bank_topic["fact"])
+    # Topic-specific question hook, derived only from the vetted topic wording.
+    hook_source = topic.split(":")[0].strip()
+    hook_source = re.sub(r"^why\\s+", "", hook_source, flags=re.I)
+    hook_source = hook_source.rstrip(" .!?")
+    hook = ("Why does " + hook_source.lower() + "?") if hook_source else "A surprising psychology finding"
+    if len(hook.split()) > MAX_HOOK_WORDS:
+        hook = "What does this reveal about the human mind?"
+
+    fact_scenes = _split_narration(fact)
     scenes = [{"text": hook}]
-    scenes.extend({"text": x} for x in clean_sentences[:MAX_SCENES - 2])
-    scenes.append({"text": "That is the key finding. What part of it makes you think differently?"})
+    scenes.extend({"text": sentence} for sentence in fact_scenes)
+    scenes.append({"text": "That is what this research found. What do you think?"})
+    scenes = scenes[:MAX_SCENES]
+
     raw = {
         "topic": bank_topic["id"],
         "title": topic[:68] if len(topic) >= 10 else "A psychology detail worth thinking about",
