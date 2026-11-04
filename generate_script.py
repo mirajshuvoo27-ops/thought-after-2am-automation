@@ -230,23 +230,23 @@ def build_video(raw, slot, bank_topic, entries, model):
 
 def _plain_text(value):
     """Remove parenthetical notes and markup from narration."""
-    value = re.sub(r"\\([^)]*\\)", "", str(value))
-    value = re.sub(r"[#*_\\[\\]{}<>]", "", value)
-    return re.sub(r"\\s+", " ", value).strip()
+    value = re.sub(r"\([^)]*\)", "", str(value))
+    value = re.sub(r"[#*_\[\]{}<>]", "", value)
+    return re.sub(r"\s+", " ", value).strip()
 
 
 def _split_narration(fact, max_words=20):
-    """Split at sentence/clause boundaries; never cut a sentence at an arbitrary word."""
+    """Create readable scene chunks without cutting at arbitrary word positions."""
+    fact = _plain_text(fact)
+    sentences = [x.strip() for x in re.split(r"(?<=[.!?])\s+", fact) if x.strip()]
     chunks = []
-    for sentence in re.split(r"(?<=[.!?])\\s+", fact.strip()):
-        sentence = _plain_text(sentence)
-        if not sentence:
-            continue
+    for sentence in sentences:
         if len(sentence.split()) <= max_words:
             chunks.append(sentence)
             continue
-        # Prefer natural clause boundaries when a source sentence is long.
-        parts = re.split(r"(?<=,)|(?<=;)|(?<=:)\\s+", sentence)
+
+        # Split long sentences only at punctuation/conjunction boundaries.
+        parts = re.split(r"(?<=[,;:])\s+|\s+(?=(?:and|but|while|because|which|although|so)\b)", sentence, flags=re.I)
         current = ""
         for part in parts:
             part = part.strip()
@@ -254,15 +254,30 @@ def _split_narration(fact, max_words=20):
                 continue
             candidate = (current + " " + part).strip()
             if current and len(candidate.split()) > max_words:
-                chunks.append(current)
+                chunks.append(current.rstrip(" ,;:"))
                 current = part
             else:
                 current = candidate
         if current:
-            chunks.append(current)
-    return chunks
+            chunks.append(current.rstrip(" ,;:"))
 
-
+    # A final safety check: if a clause is still long, split at the nearest
+    # conjunction, never by blindly slicing the sentence into fixed word counts.
+    final = []
+    for chunk in chunks:
+        words = chunk.split()
+        if len(words) <= max_words:
+            final.append(chunk)
+            continue
+        cut = max_words
+        for i in range(min(max_words, len(words) - 1), max(8, max_words - 7), -1):
+            if words[i].lower().strip(" ,;:") in {"and", "but", "while", "because", "which", "although", "so"}:
+                cut = i
+                break
+        final.append(" ".join(words[:cut]).rstrip(" ,;:"))
+        final.append(" ".join(words[cut:]).lstrip(" ,;:"))
+    return [x for x in final if x]
+ 
 def generate(slot, entries, use_bank=True):
     """Build a concise, source-faithful script from one unused vetted topic."""
     bank_topic = pick_bank_topic(entries)
@@ -283,7 +298,8 @@ def generate(slot, entries, use_bank=True):
     scenes = [{"text": hook}]
     scenes.extend({"text": sentence} for sentence in fact_scenes)
     scenes.append({"text": "That is what this research found. What do you think?"})
-    scenes = scenes[:MAX_SCENES]
+    if len(scenes) > MAX_SCENES:
+        raise RuntimeError(f"Topic needs {len(scenes)} scenes, above the {MAX_SCENES}-scene limit; shorten the verified topic fact instead of cutting narration.")
 
     raw = {
         "topic": bank_topic["id"],
