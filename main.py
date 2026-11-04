@@ -6,6 +6,7 @@ import subprocess
 from pathlib import Path
 
 import edge_tts
+from mascot_motion import MascotMotion
 from PIL import Image, ImageDraw, ImageFont
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
@@ -17,6 +18,8 @@ OUTPUT = ROOT / "output"
 OUTPUT.mkdir(exist_ok=True)
 
 W, H, FPS = 720, 1280, 15
+MASCOT_MOTION = MascotMotion(ROOT)
+
 VOICE_OPTIONS = ["en-US-AndrewNeural", "en-US-AriaNeural"]
 
 # Uses the eight pose files already uploaded in assets/.
@@ -167,25 +170,30 @@ def make_frame(text, scene_index, frame_no, total_frames, scene):
         pose_file = choose_pose(scene, scene_index)
         p = asset_path(pose_file)
         if p:
-            mascot = Image.open(p).convert("RGBA")
-            mascot.thumbnail((W-105, 555), Image.Resampling.LANCZOS)
-            bob = int(13*math.sin(t*2.5))
-            scale = 1 + 0.018*math.sin(t*2.0)
-            mascot = mascot.resize((int(mascot.width*scale),int(mascot.height*scale)),
-                                   Image.Resampling.LANCZOS)
-            # Small lean gives a lively presenter feel; this is whole-sprite motion.
-            angle = 1.2*math.sin(t*1.8)
-            mascot = mascot.rotate(angle, resample=Image.Resampling.BICUBIC, expand=True)
-            x = (W-mascot.width)//2
-            y = 125 + bob
             d.rounded_rectangle((35,120,W-35,710),radius=28,
                                 fill=(18,30,60),outline=(72,118,210),width=3)
-            im.paste(mascot,(x,y),mascot)
+            expression = MASCOT_MOTION.expression_for(
+                text, scene.get("expression") if isinstance(scene, dict) else None)
+            gesture = MASCOT_MOTION.gesture_for(
+                text, scene.get("gesture") if isinstance(scene, dict) else None)
+            layered = MASCOT_MOTION.render(
+                (W-90,570), t,
+                pose_name=scene.get("pose","speaking") if isinstance(scene,dict) else "speaking",
+                expression=expression, gesture=gesture)
+            if layered is not None:
+                im.paste(layered,(45,125),layered)
+            else:
+                mascot = Image.open(p).convert("RGBA")
+                mascot.thumbnail((W-105, 555), Image.Resampling.LANCZOS)
+                bob = int(13*math.sin(t*2.5))
+                scale = 1 + 0.018*math.sin(t*2.0)
+                mascot = mascot.resize((int(mascot.width*scale),int(mascot.height*scale)),
+                                       Image.Resampling.LANCZOS)
+                mascot = mascot.rotate(1.2*math.sin(t*1.8),
+                                       resample=Image.Resampling.BICUBIC, expand=True)
+                x = (W-mascot.width)//2
+                im.paste(mascot,(x,125+bob),mascot)
             d = ImageDraw.Draw(im)
-            # Subtle speaking pulse, not true lip-sync.
-            if scene_expression(scene,scene_index) == "talking":
-                rr = 5 + int(2*(1+math.sin(t*11)))
-                d.ellipse((W//2-rr,695-rr,W//2+rr,695+rr),fill=(255,197,55))
     else:
         draw_topic_graphic(d, text, t)
 
