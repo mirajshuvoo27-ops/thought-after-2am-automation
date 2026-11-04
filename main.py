@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Thought After 2AM - render one Short and upload it as a scheduled (private -> public) YouTube video.
+"""Thought After 2AM - render one Short and upload it privately for manual scheduling.
  
 Run by the GitHub workflow after generate_script.py has written video_<slot>.json.
     VIDEO_SLOT = morning | evening      (or --slot)
@@ -28,7 +28,6 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont
  
 import history
-import scheduling
  
 ROOT = Path(".")
 OUTPUT = ROOT / "output"
@@ -445,11 +444,8 @@ def main(argv=None):
     if duplicate:
         raise RuntimeError(f"Refusing to publish a repeat: {duplicate}")
  
-    event = os.environ.get("GITHUB_EVENT_NAME", "workflow_dispatch")
-    target = scheduling.choose_publish_time(slot, datetime.now(timezone.utc), event)
     log(f"SLOT={slot} EVENT={event} DRY_RUN={args.dry_run} SCRIPT={script_path}")
     log(f"TITLE: {data['title']}")
-    log(f"Intended publication: {scheduling.describe(target)}")
  
     final = OUTPUT / f"thought_after_2am_{slot}.mp4"
     seconds = render_video(data["scenes"], slot, final)
@@ -459,20 +455,12 @@ def main(argv=None):
         write_step_summary([f"### Dry run: {slot}", f"**{data['title']}** rendered ({seconds:.0f}s). Nothing was uploaded."])
         return
  
-    stage("Upload to YouTube (private, scheduled)")
-    publish_at_dt, late = scheduling.finalize_publish_time(target, datetime.now(timezone.utc))
-    if late:
-        log(f"WARNING: the {slot} slot ({scheduling.describe(target)}) is too close or already passed "
-            f"(GitHub started the run late). Publishing at {scheduling.describe(publish_at_dt)} instead.")
-        print("::warning title=Late run::The scheduled slot was missed because the run started late; the video is scheduled a few minutes from now.", flush=True)
-    publish_at = scheduling.to_youtube_timestamp(publish_at_dt)
-    log(f"publishAt={publish_at} ({scheduling.describe(publish_at_dt)})")
- 
-    from youtube_upload import upload_scheduled
-    video_id = upload_scheduled(final, data, publish_at)
-    log(f"Uploaded video id: {video_id}  https://youtu.be/{video_id}")
+    stage("Upload to YouTube (PRIVATE; schedule manually in Studio)")
+    from youtube_upload import upload_private
+    video_id = upload_private(final, data)
+    log(f"Uploaded private video id: {video_id}  https://youtu.be/{video_id}")
     end_stage()
- 
+
     try:
         history.record({
             "recorded_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
@@ -481,8 +469,8 @@ def main(argv=None):
             "topic": data.get("topic", history.slugify(data["title"])),
             "source": data.get("source", ""),
             "video_id": video_id,
-            "publish_at": publish_at,
-            "late_publish": late,
+            "publish_at": None,
+            "manual_schedule": True,
             "script_sha256": history.script_hash(data),
         })
         log("history updated")
@@ -491,11 +479,10 @@ def main(argv=None):
         print(f"::warning title=History not updated::{e}", flush=True)
  
     write_step_summary([
-        f"### Scheduled {slot} Short",
+        f"### Private {slot} Short",
         f"- **{data['title']}**",
-        f"- Video: https://youtu.be/{video_id} (private until published)",
-        f"- Publishes: {scheduling.describe(publish_at_dt)}",
-        f"- Late fallback used: {'yes' if late else 'no'}",
+        f"- Video: https://youtu.be/{video_id} (uploaded as Private)",
+        "- Next step: schedule the video manually in YouTube Studio.",
     ])
     log("DONE")
  
