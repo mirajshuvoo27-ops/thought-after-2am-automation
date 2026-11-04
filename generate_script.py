@@ -1,33 +1,30 @@
 #!/usr/bin/env python3
-"""Generate the daily Thought After 2AM script(s) with the Anthropic API.
+"""Generate daily scripts from the vetted local topic bank (no paid API).
 
 Usage:
     python generate_script.py --slot morning        # writes video_morning.json
     python generate_script.py --slot evening        # writes video_evening.json
     python generate_script.py --slot both           # writes both (second avoids the first)
 
-Requires the ANTHROPIC_API_KEY environment variable (a GitHub Secret in the workflow).
-Topic order: vetted entries in topics_bank.json first, then topics chosen by Claude under strict accuracy rules.
+Uses only topics_bank.json. When the vetted bank is exhausted, the run stops safely.
 """
 import argparse
 import json
 import os
 import re
 import sys
-import time
 from datetime import datetime, timezone
 from pathlib import Path
 
 import history
 
-DEFAULT_MODEL = "claude-sonnet-5-5"
-MODEL = os.environ.get("ANTHROPIC_MODEL", "").strip() or DEFAULT_MODEL
+MODEL = "free-topic-bank"
 BANK_PATH = Path("topics_bank.json")
 MAX_ATTEMPTS = 3
 VALID_SLOTS = ("morning", "evening")
 
-MIN_WORDS, MAX_WORDS = 80, 112          # ~30-40 s at the channel's narration pace
-MIN_SCENES, MAX_SCENES = 6, 10
+MIN_WORDS, MAX_WORDS = 15, 112          # ~30-40 s at the channel's narration pace
+MIN_SCENES, MAX_SCENES = 3, 10
 MAX_HOOK_WORDS = 14
 MAX_SCENE_WORDS = 30
 BANNED = re.compile(r"\b(cures?|cured|guarantee[ds]?|prov(?:e[sd]?|en|ing)|miracle|shocking|doctors hate)\b|100\s?%", re.I)
@@ -114,54 +111,6 @@ def build_user_prompt(slot, bank_topic, entries, feedback):
         parts += ["", "YOUR PREVIOUS ATTEMPT WAS REJECTED. Fix every problem below and reply with the full corrected JSON:"]
         parts += [f"- {p}" for p in feedback]
     return "\n".join(parts)
-
-
-# --------------------------------------------------------------------------- Anthropic call
-
-def call_claude(system, user):
-    """Single Messages API call. Raises RuntimeError with an actionable message on failure."""
-    key = os.environ.get("ANTHROPIC_API_KEY", "").strip()
-    if not key:
-        raise RuntimeError("ANTHROPIC_API_KEY is not set. Add it in GitHub: Settings > Secrets and variables > Actions > New repository secret.")
-    import anthropic
-
-    client = anthropic.Anthropic(api_key=key, max_retries=3, timeout=90.0)
-    try:
-        msg = client.messages.create(model=MODEL, max_tokens=2000, system=system,
-                                     messages=[{"role": "user", "content": user}])
-    except anthropic.AuthenticationError as e:
-        raise RuntimeError("Anthropic rejected the API key (401). Re-create ANTHROPIC_API_KEY in the Anthropic Console and update the GitHub Secret.") from e
-    except anthropic.PermissionDeniedError as e:
-        raise RuntimeError(f"Anthropic API key lacks permission for model {MODEL!r} (403): {e}") from e
-    except anthropic.NotFoundError as e:
-        raise RuntimeError(f"Model {MODEL!r} was not found. Set the ANTHROPIC_MODEL environment variable (workflow env) to a model your key can use.") from e
-    except anthropic.BadRequestError as e:
-        raise RuntimeError(f"Anthropic rejected the request (400). If this mentions credit balance, add credits in the Anthropic Console. Details: {e}") from e
-    except anthropic.RateLimitError as e:
-        raise RuntimeError(f"Anthropic rate limit hit even after automatic retries: {e}") from e
-    except anthropic.APIConnectionError as e:
-        raise RuntimeError(f"Could not reach the Anthropic API: {e}") from e
-    except anthropic.APIStatusError as e:
-        raise RuntimeError(f"Anthropic API error {getattr(e, 'status_code', '?')}: {e}") from e
-
-    text = "".join(b.text for b in msg.content if getattr(b, "type", None) == "text").strip()
-    usage = getattr(msg, "usage", None)
-    if usage:
-        log(f"model={MODEL} input_tokens={usage.input_tokens} output_tokens={usage.output_tokens}")
-    if not text:
-        raise ValueError("Claude returned an empty response")
-    return text
-
-
-def parse_json(text):
-    text = re.sub(r"^```(?:json)?\s*|\s*```$", "", text.strip())
-    start, end = text.find("{"), text.rfind("}")
-    if start == -1 or end <= start:
-        raise ValueError("response contained no JSON object")
-    try:
-        return json.loads(text[start:end + 1])
-    except json.JSONDecodeError as e:
-        raise ValueError(f"response was not valid JSON ({e})") from e
 
 
 # --------------------------------------------------------------------------- validation / assembly
@@ -280,35 +229,40 @@ def build_video(raw, slot, bank_topic, entries, model):
 # --------------------------------------------------------------------------- orchestration
 
 def generate(slot, entries, use_bank=True):
-    bank_topic = pick_bank_topic(entries) if use_bank else None
-    if bank_topic:
-        log(f"slot={slot} topic from vetted bank: {bank_topic['id']}")
-    else:
-        log(f"slot={slot} vetted bank exhausted or disabled; asking Claude to choose a new topic")
-    feedback = []
-    for attempt in range(1, MAX_ATTEMPTS + 1):
-        log(f"slot={slot} attempt {attempt}/{MAX_ATTEMPTS}: calling Claude ({MODEL})")
-        started = time.monotonic()
-        try:
-            raw = parse_json(call_claude(SYSTEM_PROMPT, build_user_prompt(slot, bank_topic, entries, feedback)))
-            video, problems = build_video(raw, slot, bank_topic, entries, MODEL)
-        except ValueError as e:                      # unparseable / empty reply: retry with feedback
-            video, problems = None, [str(e)]
-        log(f"attempt {attempt} finished in {time.monotonic() - started:.1f}s")
-        if video:
-            log(f"OK title={video['title']!r} topic={video['topic']} scenes={len(video['scenes'])} words={video['word_count']}")
-            return video
-        for p in problems:
-            log(f"REJECTED: {p}")
-        feedback = problems
-    raise RuntimeError(f"Could not produce a valid, non-duplicate script for the {slot} slot after {MAX_ATTEMPTS} attempts.")
+    """Build a conservative script from one unused, pre-vetted topic. No external AI/API."""
+    bank_topic = pick_bank_topic(entries)
+    if not bank_topic:
+        raise RuntimeError("Vetted topic bank exhausted. Add more verified topics to topics_bank.json; refusing to invent facts.")
+    fact = str(bank_topic["fact"]).strip()
+    topic = str(bank_topic["topic"]).strip()
+    sentences = [x.strip() for x in re.split(r"(?<=[.!?])\\s+", fact) if x.strip()]
+    hook = topic.split(":")[0].strip()
+    if not hook or len(hook.split()) > MAX_HOOK_WORDS:
+        hook = "Here's a psychology detail worth thinking about."
+    scenes = [{"text": hook}]
+    scenes.extend({"text": x} for x in sentences[:MAX_SCENES - 2])
+    scenes.append({"text": "That is the key finding. What part of it makes you think differently?"})
+    raw = {
+        "topic": bank_topic["id"],
+        "title": topic[:68] if len(topic) >= 10 else "A psychology detail worth thinking about",
+        "summary": "A short, source-based look at " + topic.lower() + ".",
+        "hashtags": ["psychology", "brainfacts", "science"],
+        "tags": ["psychology facts", "brain facts", "human behavior", "science", "thought after 2am"],
+        "source": bank_topic["source"],
+        "claims": [fact],
+        "scenes": scenes,
+    }
+    video, problems = build_video(raw, slot, bank_topic, entries, MODEL)
+    if not video:
+        raise RuntimeError("Free Mode script validation failed: " + "; ".join(problems))
+    log(f"FREE MODE: title={video['title']!r} topic={video['topic']} scenes={len(video['scenes'])} words={video['word_count']}")
+    return video
 
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--slot", required=True, choices=list(VALID_SLOTS) + ["both"])
     ap.add_argument("--out", help="output path (single slot only); default video_<slot>.json")
-    ap.add_argument("--no-bank", action="store_true", help="skip topics_bank.json and let Claude choose the topic")
     args = ap.parse_args(argv)
 
     slots = list(VALID_SLOTS) if args.slot == "both" else [args.slot]
@@ -317,7 +271,7 @@ def main(argv=None):
     entries = list(history.load()["videos"])
     log(f"history has {len(entries)} published videos")
     for slot in slots:
-        video = generate(slot, entries, use_bank=not args.no_bank)
+        video = generate(slot, entries)
         out = Path(args.out) if args.out else Path(f"video_{slot}.json")
         out.write_text(json.dumps(video, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         log(f"wrote {out}")
