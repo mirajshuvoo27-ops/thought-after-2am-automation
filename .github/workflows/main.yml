@@ -1,17 +1,46 @@
-
-name: Thought After 2AM - YouTube Automation
+name: Thought After 2AM - Scheduled Shorts
 
 on:
+  schedule:
+    # GitHub cron is always in UTC. Each run starts ONE HOUR before its publication time.
+    #   Morning: starts 00:00 UTC (06:00 Bangladesh) -> publishes 01:00 UTC (07:00 Bangladesh)
+    #   Evening: starts 14:00 UTC (20:00 Bangladesh) -> publishes 15:00 UTC (21:00 Bangladesh)
+    - cron: '0 0 * * *'
+    - cron: '0 14 * * *'
   workflow_dispatch:
+    inputs:
+      slot:
+        description: "Which daily video slot to generate"
+        required: true
+        type: choice
+        options: [morning, evening]
+      dry_run:
+        description: "Dry run: generate and render only (no YouTube upload, no history entry)"
+        required: false
+        type: boolean
+        default: false
 
 permissions:
-  contents: read
+  contents: write   # lets the job commit content_history.json (prevents repeated topics)
+
+# One run at a time, so two jobs never write content_history.json simultaneously.
+concurrency:
+  group: thought-after-2am-pipeline
+  cancel-in-progress: false
 
 jobs:
-  create-and-upload:
+  create-and-schedule:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
-
+    timeout-minutes: 45
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      ANTHROPIC_MODEL: ${{ vars.ANTHROPIC_MODEL }}   # optional repository variable; empty = built-in default model
+      YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+      YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+      YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+      VIDEO_SLOT: ${{ github.event_name == 'workflow_dispatch' && inputs.slot || (github.event.schedule == '0 0 * * *' && 'morning' || 'evening') }}
+      DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && 'true' || 'false' }}
+      PYTHONUNBUFFERED: "1"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -19,22 +48,72 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: '3.11'
+          cache: pip
 
-      - name: Install FFmpeg
+      - name: Check required secrets
         run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg fonts-dejavu-core
+          echo "Slot: $VIDEO_SLOT | Event: $GITHUB_EVENT_NAME | Dry run: $DRY_RUN"
+          missing=0
+          required="ANTHROPIC_API_KEY"
+          if [ "$DRY_RUN" != "true" ]; then
+            required="$required YOUTUBE_CLIENT_ID YOUTUBE_CLIENT_SECRET YOUTUBE_REFRESH_TOKEN"
+          fi
+          for name in $required; do
+            if [ -z "${!name}" ]; then
+              echo "::error title=Missing secret::GitHub Secret $name is not set (Settings > Secrets and variables > Actions)."
+              missing=1
+            fi
+          done
+          exit $missing
+
+      - name: Install FFmpeg and fonts
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends ffmpeg fonts-dejavu-core
 
       - name: Install Python packages
-        run: |
-          python -m pip install --upgrade pip
-          pip install edge-tts pillow google-api-python-client google-auth google-auth-oauthlib
+        run: pip install -r requirements.txt
 
-      - name: Generate and upload YouTube Short
-        env:
-          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
-          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
-          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+      - name: Generate today's script (Anthropic API)
+        run: python generate_script.py --slot "$VIDEO_SLOT"
+
+      - name: Render video and schedule on YouTube
+        run: python main.py
+
+      - name: Commit content history
+        if: success() && env.DRY_RUN != 'true'
         run: |
-          python main.py
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add content_history.json
+          if git diff --cached --quiet; then
+            echo "No history changes to commit."
+            exit 0
+          fi
+          git commit -m "chore: record scheduled ${VIDEO_SLOT} short"
+          for attempt in 1 2 3; do
+            if git push origin "HEAD:${GITHUB_REF_NAME}"; then
+              exit 0
+            fi
+            echo "Push failed (attempt $attempt); rebasing and retrying..."
+            git pull --rebase origin "${GITHUB_REF_NAME}"
+          done
+          echo "::warning title=History not pushed::Could not push content_history.json. Topics may repeat until it is committed."
+
+      - name: Save generated script (for review)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: script-${{ env.VIDEO_SLOT }}
+          path: video_${{ env.VIDEO_SLOT }}.json
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Save rendered video (dry run only)
+        if: success() && env.DRY_RUN == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: dry-run-video-${{ env.VIDEO_SLOT }}
+          path: output/thought_after_2am_${{ env.VIDEO_SLOT }}.mp4
+          retention-days: 3
