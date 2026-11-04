@@ -236,11 +236,8 @@ def generate(slot, entries, use_bank=True):
     fact = str(bank_topic["fact"]).strip()
     topic = str(bank_topic["topic"]).strip()
     sentences = [x.strip() for x in re.split(r"(?<=[.!?])\s+", fact) if x.strip()]
-    hook = re.sub(r"\\([^)]*\\)", "", topic.split(":")[0]).strip()
-    hook = re.sub(r"[#*_\\[\\]{}<>]", "", hook)
-    hook = re.sub(r"\\s+", " ", hook).strip(" .,:;!?")
-    if not hook or len(hook.split()) > MAX_HOOK_WORDS:
-        hook = "Here's a psychology detail worth thinking about"
+    # Use a plain-text hook; topic names may contain parentheses or markup.
+    hook = "A surprising psychology finding"
     clean_sentences = []
     for sentence in sentences:
         sentence = re.sub(r"\\([^)]*\\)", "", sentence)
