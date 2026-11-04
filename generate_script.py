@@ -235,7 +235,7 @@ def generate(slot, entries, use_bank=True):
         raise RuntimeError("Vetted topic bank exhausted. Add more verified topics to topics_bank.json; refusing to invent facts.")
     fact = str(bank_topic["fact"]).strip()
     topic = str(bank_topic["topic"]).strip()
-    sentences = [x.strip() for x in re.split(r"(?<=[.!?])\\s+", fact) if x.strip()]
+    sentences = [x.strip() for x in re.split(r"(?<=[.!?])\s+", fact) if x.strip()]
     hook = topic.split(":")[0].strip()
     if not hook or len(hook.split()) > MAX_HOOK_WORDS:
         hook = "Here's a psychology detail worth thinking about."
