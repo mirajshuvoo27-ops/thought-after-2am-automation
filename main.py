@@ -179,7 +179,7 @@ def make_frame(text, scene_index, frame_no, total_frames, scene):
             layered = MASCOT_MOTION.render(
                 (W-90,570), t,
                 pose_name=scene.get("pose","speaking") if isinstance(scene,dict) else "speaking",
-                expression=expression, gesture=gesture)
+                expression=expression, gesture=gesture, pose_file=pose_file)
             if layered is not None:
                 im.paste(layered,(45,125),layered)
             else:
