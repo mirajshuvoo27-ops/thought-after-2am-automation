@@ -1,0 +1,110 @@
+{
+  "_about": "Vetted topics used first (in order). Each 'fact' is the ONLY factual claim the script may build on. Cite-check each source once before enabling automation. After the bank is used up, the generator asks Claude to choose new topics under the same accuracy rules.",
+  "topics": [
+    {
+      "id": "sleep-loss-amygdala",
+      "topic": "Why worries feel bigger when you're sleep-deprived (the '3 AM thoughts' effect)",
+      "fact": "In a 2007 brain-imaging study, after a night without sleep, participants' amygdala responded more strongly to negative images, and its connection to the medial prefrontal cortex was weaker.",
+      "source": "Yoo SS, Gujar N, Hu P, Jolesz FA, Walker MP. The human emotional brain without sleep: a prefrontal amygdala disconnect. Current Biology, 2007.",
+      "caution": "The study did not test time of day, so do not claim 3 AM was measured. Give no percentages. The amygdala does more than detect threats; say 'alarm system' only as a simplification. Not medical advice."
+    },
+    {
+      "id": "spotlight-effect",
+      "topic": "The spotlight effect: people notice your embarrassing moments far less than you think",
+      "fact": "In a 2000 study, students wore an embarrassing T-shirt into a room. They guessed about half of the people there would notice it, but only about a quarter actually did.",
+      "source": "Gilovich T, Medvec VH, Savitsky K. The spotlight effect in social judgment. Journal of Personality and Social Psychology, 2000.",
+      "caution": "Use 'about half' and 'about a quarter'. Do not say 'nobody notices'."
+    },
+    {
+      "id": "voice-recording",
+      "topic": "Why your voice sounds different on a recording",
+      "fact": "When you talk, you hear your voice through the air and also through vibrations in your skull and body. A recording captures mainly the sound traveling through the air, which is what other people hear.",
+      "source": "Maurer D, Landis T. Role of bone conduction in the self-perception of speech. Folia Phoniatrica, 1990.",
+      "caution": "Say recordings often sound different or higher to the speaker; do not claim a fixed pitch change. Do not claim this is the only reason people dislike their recorded voice."
+    },
+    {
+      "id": "frequency-illusion",
+      "topic": "The frequency illusion (often nicknamed the Baader-Meinhof phenomenon)",
+      "fact": "After you notice something new, selective attention and confirmation bias can make it seem to appear everywhere. Linguist Arnold Zwicky named this the frequency illusion. It is the same amount of that thing in the world; you are just noticing it more.",
+      "source": "Arnold Zwicky, Language Log posts naming the 'frequency illusion'.",
+      "caution": "Do not state a year for the term. 'Baader-Meinhof' is a popular nickname, not a formal scientific term; do not tell the nickname's origin story."
+    },
+    {
+      "id": "hypnic-jerks",
+      "topic": "Hypnic jerks: why your body twitches as you fall asleep",
+      "fact": "Hypnic jerks (sleep starts) are sudden muscle twitches that happen as you drift off. They are very common and usually harmless. Scientists do not agree on exactly why they happen.",
+      "source": "General clinical overviews of sleep starts, e.g., Sleep Foundation and Mayo Clinic Health System.",
+      "caution": "Do not present any single theory as established. Say 'scientists aren't sure'. No medical advice."
+    },
+    {
+      "id": "brain-energy-budget",
+      "topic": "Your brain is small but uses a huge share of your energy",
+      "fact": "The human brain is only about 2 percent of body weight, yet it uses roughly 20 percent of the body's energy at rest.",
+      "source": "Raichle ME, Gusnard DA. Appraising the brain's energy budget. PNAS, 2002.",
+      "caution": "Say 'at rest' and 'roughly'. Do not claim thinking hard burns many extra calories."
+    },
+    {
+      "id": "false-memory-mall",
+      "topic": "Researchers made people remember something that never happened (the 'lost in the mall' study)",
+      "fact": "In a 1995 study, researchers gave 24 participants short stories about childhood events supplied by family members. One story was fake: getting lost in a shopping mall. The researchers judged that about a quarter of participants had been led to remember it, partly or fully. A 2023 replication found similar or higher rates by the original coding method, but a closer look at what participants actually said suggests that fully false memories are harder to create than people once believed.",
+      "source": "Loftus EF, Pickrell JE. The formation of false memories. Psychiatric Annals, 1995.",
+      "caution": "Say the researchers 'judged' about a quarter remembered it; do not say memories were 'implanted' in a quarter of people. Include the nuance that later research suggests fully false memories are harder to create than first thought. Do not claim all memories are unreliable. Do not mention therapy or abuse."
+    },
+    {
+      "id": "unfinished-tasks-plan",
+      "topic": "Why unfinished tasks keep nagging you, and what helps",
+      "fact": "Research found that unfinished goals can keep intruding on your thoughts, and that making a specific plan for finishing them reduced those intrusive thoughts.",
+      "source": "Masicampo EJ, Baumeister RF. Consider it done! Plan making can eliminate the cognitive effects of unfulfilled goals. Journal of Personality and Social Psychology, 2011.",
+      "caution": "Do NOT claim unfinished tasks are remembered better than finished ones; that older claim has mixed replication. Do not call it the 'Zeigarnik effect' as proven fact."
+    },
+    {
+      "id": "phantom-vibration",
+      "topic": "Phantom vibrations: feeling a buzz your phone never made",
+      "fact": "In a 2010 survey of hospital medical staff, about two-thirds (68 percent) said they had felt phantom vibrations from a phone or pager. The researchers suggested the brain may misread ordinary sensations as a signal because it is expecting one.",
+      "source": "Rothberg MB, et al. Phantom vibration syndrome among medical staff: a cross sectional survey. BMJ, 2010.",
+      "caution": "Say 'about two-thirds of the staff surveyed' (a survey of 169 hospital staff, not the general public). Present the explanation as the researchers' suggestion, not proven fact. Do not call it a disease."
+    },
+    {
+      "id": "sleep-paralysis",
+      "topic": "Sleep paralysis: waking up unable to move",
+      "fact": "During REM sleep the brain keeps most of your muscles from moving. In sleep paralysis, you become aware before that muscle block ends. A review estimated that about 8 percent of people experience it at least once in their lives.",
+      "source": "Sharpless BA, Barber JP. Lifetime prevalence rates of sleep paralysis: a systematic review. Sleep Medicine Reviews, 2011.",
+      "caution": "Keep the tone calm and reassuring. Do not suggest supernatural causes as fact. No medical advice beyond 'ask a doctor if it happens a lot'."
+    },
+    {
+      "id": "invisible-gorilla",
+      "topic": "The invisible gorilla: how you can miss something obvious",
+      "fact": "In a 1999 experiment, people watched a video and counted basketball passes. About half of them did not notice a person in a gorilla suit walk through the scene.",
+      "source": "Simons DJ, Chabris CF. Gorillas in our midst: sustained inattentional blindness for dynamic events. Perception, 1999.",
+      "caution": "Say 'about half'. Do not generalize that people are always blind to the obvious."
+    },
+    {
+      "id": "mind-wandering",
+      "topic": "Your mind wanders almost half the time, and it's linked to feeling less happy",
+      "fact": "A large phone-app study sampled people's thoughts through the day. Their minds were wandering about 47 percent of the time, and people reported being less happy when their minds wandered.",
+      "source": "Killingsworth MA, Gilbert DT. A wandering mind is an unhappy mind. Science, 2010.",
+      "caution": "It is a link, not proof that mind-wandering causes unhappiness. Say 'about 47 percent' or 'nearly half'."
+    },
+    {
+      "id": "own-name-attention",
+      "topic": "Why you suddenly hear your own name in a noisy room (the cocktail party effect)",
+      "fact": "In a 1959 experiment, people were told to focus on one voice and ignore another. About a third of them still noticed their own name in the ignored voice.",
+      "source": "Moray N. Attention in dichotic listening: affective cues and the influence of instructions. Quarterly Journal of Experimental Psychology, 1959.",
+      "caution": "Say 'about a third'. Do not claim the brain 'understands everything' it ignores."
+    },
+    {
+      "id": "anchoring-effect",
+      "topic": "The anchoring effect: how a random number can sway your guess",
+      "fact": "In a classic experiment, people spun a wheel that was rigged to land on 10 or 65, then estimated the percentage of African countries in the United Nations. The median estimates were about 25 for the group that saw 10 and about 45 for the group that saw 65.",
+      "source": "Tversky A, Kahneman D. Judgment under uncertainty: heuristics and biases. Science, 1974.",
+      "caution": "Say 'median estimate'. Do not claim anchors control all decisions."
+    },
+    {
+      "id": "open-label-placebo",
+      "topic": "A placebo can help even when you know it's a placebo",
+      "fact": "In a small 2010 trial of people with irritable bowel syndrome, patients who were told honestly that their pills were placebos reported more symptom relief than patients who received no treatment.",
+      "source": "Kaptchuk TJ, et al. Placebos without deception: a randomized controlled trial in irritable bowel syndrome. PLoS ONE, 2010.",
+      "caution": "It was a small trial (about 80 people). Do not claim placebos cure disease or replace treatment. Give no medical advice."
+    }
+  ]
+}
