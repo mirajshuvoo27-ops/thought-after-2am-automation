@@ -235,17 +235,33 @@ def _plain_text(value):
     return re.sub(r"\s+", " ", value).strip()
 
 
-def _split_narration(fact, max_words=30):
-    """Keep complete sentences intact; reject facts that cannot fit a scene."""
+def _split_narration(fact, max_words=18):
+    """Split verified facts into short, speakable caption scenes without dropping words."""
     fact = _plain_text(fact)
     sentences = [x.strip() for x in re.split(r"(?<=[.!?])\s+", fact) if x.strip()]
-    too_long = [x for x in sentences if len(x.split()) > max_words]
-    if too_long:
-        raise RuntimeError(
-            "A verified topic-bank sentence exceeds the 30-word scene limit. "
-            "Shorten that source-backed sentence in topics_bank.json; it was not cut."
-        )
-    return sentences
+    chunks = []
+    for sentence in sentences:
+        if len(sentence.split()) <= max_words:
+            chunks.append(sentence)
+            continue
+        # Prefer natural clause boundaries; only split at commas/semicolons/colons.
+        clauses = [x.strip() for x in re.split(r"(?<=[,;:])\s+", sentence) if x.strip()]
+        if len(clauses) == 1:
+            raise RuntimeError(
+                "A verified fact sentence is too long for a readable caption. "
+                "Rewrite that sentence in topics_bank.json without changing its meaning."
+            )
+        current = ""
+        for clause in clauses:
+            candidate = (current + " " + clause).strip()
+            if current and len(candidate.split()) > max_words:
+                chunks.append(current)
+                current = clause
+            else:
+                current = candidate
+        if current:
+            chunks.append(current)
+    return chunks
 
 
 def generate(slot, entries, use_bank=True):
