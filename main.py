@@ -444,6 +444,7 @@ def main(argv=None):
     if duplicate:
         raise RuntimeError(f"Refusing to publish a repeat: {duplicate}")
  
+    event = os.environ.get("GITHUB_EVENT_NAME", "workflow_dispatch")
     log(f"SLOT={slot} EVENT={event} DRY_RUN={args.dry_run} SCRIPT={script_path}")
     log(f"TITLE: {data['title']}")
  
