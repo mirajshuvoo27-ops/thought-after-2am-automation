@@ -235,14 +235,14 @@ def _plain_text(value):
     return re.sub(r"\s+", " ", value).strip()
 
 
-def _split_narration(fact, max_words=22):
+def _split_narration(fact, max_words=30):
     """Keep complete sentences intact; reject facts that cannot fit a scene."""
     fact = _plain_text(fact)
     sentences = [x.strip() for x in re.split(r"(?<=[.!?])\s+", fact) if x.strip()]
     too_long = [x for x in sentences if len(x.split()) > max_words]
     if too_long:
         raise RuntimeError(
-            "A verified topic-bank sentence exceeds the 22-word scene limit. "
+            "A verified topic-bank sentence exceeds the 30-word scene limit. "
             "Shorten that source-backed sentence in topics_bank.json; it was not cut."
         )
     return sentences
@@ -258,8 +258,8 @@ def generate(slot, entries, use_bank=True):
     fact = _plain_text(bank_topic["fact"])
     # Topic-specific question hook, derived only from the vetted topic wording.
     hook_source = topic.split(":")[0].strip().rstrip(" .!?")
-    starts_with_why = bool(re.match(r"^why\\s+", hook_source, flags=re.I))
-    hook_source = re.sub(r"^why\\s+", "", hook_source, flags=re.I).strip()
+    starts_with_why = bool(re.match(r"^why\s+", hook_source, flags=re.I))
+    hook_source = re.sub(r"^why\s+", "", hook_source, flags=re.I).strip()
     if hook_source:
         hook = ("Ever wonder why " if starts_with_why else "Ever wonder about ") + hook_source.lower() + "?"
     else:
