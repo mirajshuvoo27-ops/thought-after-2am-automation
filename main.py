@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Thought After 2AM - render one Short and upload it as a scheduled (private -> public) YouTube video.
+"""Thought After 2AM - render one Short and upload it privately for manual scheduling.
  
 Run by the GitHub workflow after generate_script.py has written video_<slot>.json.
     VIDEO_SLOT = morning | evening      (or --slot)
@@ -28,7 +28,6 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont
  
 import history
-import scheduling
  
 ROOT = Path(".")
 OUTPUT = ROOT / "output"
@@ -214,9 +213,14 @@ def draw_icon(d, kind, cx, cy, t, a, b):
 class SceneRenderer:
     """Draws the frames of one scene. Drawing order and parameters match the previous draw_frame()."""
  
-    def __init__(self, text, frames):
+    def __init__(self, text, frames, scene_index=0):
         self.text, self.frames = text, frames
         self.kind = topic_kind(text)
+        # Keep the topic palette coherent, but vary the visual symbol between scenes
+        # so a sequence about the brain does not show the same brain graphic every time.
+        visual_order = ["brain", "idea", "time", "sound", "digital", "emotion", "concept"]
+        base_index = visual_order.index(self.kind)
+        self.visual_kind = visual_order[(base_index + scene_index) % len(visual_order)]
         self.bg = gradient_bg(self.kind)
         _, self.accent, self.accent2 = palette(self.kind)
         self.words = text.split()
@@ -224,17 +228,22 @@ class SceneRenderer:
         self._measure = ImageDraw.Draw(Image.new("RGBA", (8, 8)))
         self._layouts = {}
  
-    def _layout(self, count):
-        """Wrapped subtitle lines for the first `count` words; cached because many frames share one count."""
-        if count not in self._layouts:
-            shown = " ".join(self.words[:count])
+    def _layout(self):
+        """Lay out the complete scene caption once; keep it readable for the full narration."""
+        if "full" not in self._layouts:
+            shown = " ".join(self.words)
             f = font(34)
-            lines = wrap(self._measure, shown, f, W - 100)
+            lines = wrap(self._measure, shown, f, W - 112)
+            if len(lines) > 3:
+                f = font(30)
+                lines = wrap(self._measure, shown, f, W - 112)
             if len(lines) > 4:
-                f = font(29)
-                lines = wrap(self._measure, shown, f, W - 100)
-            self._layouts[count] = (f, lines)
-        return self._layouts[count]
+                f = font(26)
+                lines = wrap(self._measure, shown, f, W - 112)
+            if len(lines) > 5:
+                raise ValueError(f"Subtitle needs {len(lines)} lines; shorten this scene to keep captions comfortably readable.")
+            self._layouts["full"] = (f, lines)
+        return self._layouts["full"]
  
     def frame(self, n):
         t = n / FPS
@@ -251,18 +260,18 @@ class SceneRenderer:
         d.rounded_rectangle((34, 38, W - 34, 100), radius=22, fill=(5, 12, 30, 175), outline=(*accent, 150), width=2)
         d.text((W // 2, 69), "THOUGHT AFTER 2AM", font=font(23), fill=(239, 244, 255, 255), anchor="mm")
         # Large animated visual in upper-middle
-        draw_icon(d, self.kind, W // 2, 410, t, accent, accent2)
+        draw_icon(d, self.visual_kind, W // 2, 410, t, accent, accent2)
         # Topic label above subtitle
         d.text((W // 2, 650), self.label, font=font(20), fill=(*accent, 255), anchor="mm")
-        # Centered subtitle block; words reveal progressively with narration.
+        # Full-sentence subtitles: show the complete phrase immediately and hold it
+        # on screen for the entire spoken scene, instead of making viewers chase words.
         progress = min(1, (n + 1) / max(1, self.frames))
-        count = min(len(self.words), max(1, int(progress * len(self.words)) + 1))
-        f, lines = self._layout(count)
-        line_h = 48
-        block_h = len(lines) * line_h + 54
+        f, lines = self._layout()
+        line_h = 44 if len(lines) >= 5 else 50
+        block_h = len(lines) * line_h + 64
         top = H // 2 + 95
-        d.rounded_rectangle((35, top, W - 35, top + block_h), radius=26, fill=(3, 9, 24, 220), outline=(*accent, 230), width=3)
-        y = top + 27 + (block_h - 54 - len(lines) * line_h) // 2 + (line_h // 2 if CENTER_SUBTITLE_IN_CARD else 0)
+        d.rounded_rectangle((28, top, W - 28, top + block_h), radius=28, fill=(3, 9, 24, 232), outline=(*accent, 245), width=3)
+        y = top + 32 + (block_h - 64 - len(lines) * line_h) // 2
         for line in lines:
             d.text((W // 2 + 2, y + 3), line, font=f, fill=(0, 0, 0, 255), anchor="mm", stroke_width=2, stroke_fill=(0, 0, 0, 255))
             d.text((W // 2, y), line, font=f, fill=(255, 255, 255, 255), anchor="mm", stroke_width=1, stroke_fill=(15, 20, 40, 255))
@@ -366,7 +375,7 @@ def render_video(scenes, slot, final_path):
         try:
             for si, (text, frames) in enumerate(zip(texts, frames_per), 1):
                 scene_start = time.monotonic()
-                renderer = SceneRenderer(text, frames)
+                renderer = SceneRenderer(text, frames, scene_index=si - 1)
                 for n in range(frames):
                     proc.stdin.write(renderer.frame(n))
                 done += frames
@@ -446,10 +455,8 @@ def main(argv=None):
         raise RuntimeError(f"Refusing to publish a repeat: {duplicate}")
  
     event = os.environ.get("GITHUB_EVENT_NAME", "workflow_dispatch")
-    target = scheduling.choose_publish_time(slot, datetime.now(timezone.utc), event)
     log(f"SLOT={slot} EVENT={event} DRY_RUN={args.dry_run} SCRIPT={script_path}")
     log(f"TITLE: {data['title']}")
-    log(f"Intended publication: {scheduling.describe(target)}")
  
     final = OUTPUT / f"thought_after_2am_{slot}.mp4"
     seconds = render_video(data["scenes"], slot, final)
@@ -459,20 +466,12 @@ def main(argv=None):
         write_step_summary([f"### Dry run: {slot}", f"**{data['title']}** rendered ({seconds:.0f}s). Nothing was uploaded."])
         return
  
-    stage("Upload to YouTube (private, scheduled)")
-    publish_at_dt, late = scheduling.finalize_publish_time(target, datetime.now(timezone.utc))
-    if late:
-        log(f"WARNING: the {slot} slot ({scheduling.describe(target)}) is too close or already passed "
-            f"(GitHub started the run late). Publishing at {scheduling.describe(publish_at_dt)} instead.")
-        print("::warning title=Late run::The scheduled slot was missed because the run started late; the video is scheduled a few minutes from now.", flush=True)
-    publish_at = scheduling.to_youtube_timestamp(publish_at_dt)
-    log(f"publishAt={publish_at} ({scheduling.describe(publish_at_dt)})")
- 
-    from youtube_upload import upload_scheduled
-    video_id = upload_scheduled(final, data, publish_at)
-    log(f"Uploaded video id: {video_id}  https://youtu.be/{video_id}")
+    stage("Upload to YouTube (PRIVATE; schedule manually in Studio)")
+    from youtube_upload import upload_private
+    video_id = upload_private(final, data)
+    log(f"Uploaded private video id: {video_id}  https://youtu.be/{video_id}")
     end_stage()
- 
+
     try:
         history.record({
             "recorded_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
@@ -481,8 +480,8 @@ def main(argv=None):
             "topic": data.get("topic", history.slugify(data["title"])),
             "source": data.get("source", ""),
             "video_id": video_id,
-            "publish_at": publish_at,
-            "late_publish": late,
+            "publish_at": None,
+            "manual_schedule": True,
             "script_sha256": history.script_hash(data),
         })
         log("history updated")
@@ -491,11 +490,10 @@ def main(argv=None):
         print(f"::warning title=History not updated::{e}", flush=True)
  
     write_step_summary([
-        f"### Scheduled {slot} Short",
+        f"### Private {slot} Short",
         f"- **{data['title']}**",
-        f"- Video: https://youtu.be/{video_id} (private until published)",
-        f"- Publishes: {scheduling.describe(publish_at_dt)}",
-        f"- Late fallback used: {'yes' if late else 'no'}",
+        f"- Video: https://youtu.be/{video_id} (uploaded as Private)",
+        "- Next step: schedule the video manually in YouTube Studio.",
     ])
     log("DONE")
  

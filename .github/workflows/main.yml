@@ -2,11 +2,11 @@ name: Thought After 2AM - Scheduled Shorts
 
 on:
   schedule:
-    # GitHub cron is always in UTC. Each run starts ONE HOUR before its publication time.
-    #   Morning: starts 00:00 UTC (06:00 Bangladesh) -> publishes 01:00 UTC (07:00 Bangladesh)
-    #   Evening: starts 14:00 UTC (20:00 Bangladesh) -> publishes 15:00 UTC (21:00 Bangladesh)
-    - cron: '0 0 * * *'
-    - cron: '0 14 * * *'
+    # GitHub cron is UTC. Uploads are private, so start at the intended Bangladesh slot times.
+    #   Morning: 01:00 UTC = 07:00 Bangladesh
+    #   Evening: 15:00 UTC = 21:00 Bangladesh
+    - cron: '0 1 * * *'
+    - cron: '0 15 * * *'
   workflow_dispatch:
     inputs:
       slot:
@@ -33,8 +33,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     env:
-      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-      ANTHROPIC_MODEL: ${{ vars.ANTHROPIC_MODEL }}   # optional repository variable; empty = built-in default model
       YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
       YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
       YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
@@ -55,9 +53,9 @@ jobs:
         run: |
           echo "Slot: $VIDEO_SLOT | Event: $GITHUB_EVENT_NAME | Dry run: $DRY_RUN"
           missing=0
-          required="ANTHROPIC_API_KEY"
+          required=""
           if [ "$DRY_RUN" != "true" ]; then
-            required="$required YOUTUBE_CLIENT_ID YOUTUBE_CLIENT_SECRET YOUTUBE_REFRESH_TOKEN"
+            required="YOUTUBE_CLIENT_ID YOUTUBE_CLIENT_SECRET YOUTUBE_REFRESH_TOKEN"
           fi
           for name in $required; do
             if [ -z "${!name}" ]; then
@@ -75,10 +73,10 @@ jobs:
       - name: Install Python packages
         run: pip install -r requirements.txt
 
-      - name: Generate today's script (Anthropic API)
+      - name: Generate today's script (Free Mode topic bank)
         run: python generate_script.py --slot "$VIDEO_SLOT"
 
-      - name: Render video and schedule on YouTube
+      - name: Render video and upload privately for manual scheduling
         run: python main.py
 
       - name: Commit content history
@@ -91,7 +89,7 @@ jobs:
             echo "No history changes to commit."
             exit 0
           fi
-          git commit -m "chore: record scheduled ${VIDEO_SLOT} short"
+          git commit -m "chore: record private ${VIDEO_SLOT} short"
           for attempt in 1 2 3; do
             if git push origin "HEAD:${GITHUB_REF_NAME}"; then
               exit 0

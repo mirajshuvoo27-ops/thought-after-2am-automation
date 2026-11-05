@@ -1,4 +1,4 @@
-"""Upload a video to YouTube as PRIVATE with status.publishAt, so YouTube makes it public automatically.
+"""Upload a video to YouTube as PRIVATE for manual scheduling in YouTube Studio.
 
 Uses the same three OAuth secrets as before: YOUTUBE_CLIENT_ID, YOUTUBE_CLIENT_SECRET, YOUTUBE_REFRESH_TOKEN.
 """
@@ -45,8 +45,8 @@ def _credentials():
     return creds
 
 
-def build_body(data, publish_at):
-    """The videos.insert request body. Private + publishAt is what makes YouTube auto-publish."""
+def build_body(data, publish_at=None):
+    """The videos.insert request body. Video remains private until manually scheduled."""
     return {
         "snippet": {
             "title": str(data["title"])[:100],
@@ -56,23 +56,22 @@ def build_body(data, publish_at):
         },
         "status": {
             "privacyStatus": "private",
-            "publishAt": publish_at,  # RFC 3339 UTC, e.g. 2026-11-05T01:00:00Z
             "selfDeclaredMadeForKids": False,
         },
     }
 
 
-def upload_scheduled(path, data, publish_at):
-    """Upload `path` and schedule it. Returns the YouTube video id."""
+def upload_private(path, data):
+    """Upload `path` as private. Returns the YouTube video id."""
     from googleapiclient.discovery import build
     from googleapiclient.errors import HttpError
     from googleapiclient.http import MediaFileUpload
 
     creds = _credentials()
     yt = build("youtube", "v3", credentials=creds, cache_discovery=False)
-    body = build_body(data, publish_at)
+    body = build_body(data)
     size_mb = os.path.getsize(path) / 1e6
-    log(f"uploading {path} ({size_mb:.1f} MB) as private, publishAt={publish_at}")
+    log(f"uploading {path} ({size_mb:.1f} MB) as PRIVATE for manual scheduling")
     media = MediaFileUpload(str(path), mimetype="video/mp4", chunksize=CHUNK_SIZE, resumable=True)
     request = yt.videos().insert(part="snippet,status", body=body, media_body=media)
 
@@ -102,7 +101,7 @@ def upload_scheduled(path, data, publish_at):
     video_id = response.get("id")
     if not video_id:
         raise RuntimeError(f"YouTube returned no video id: {json.dumps(response)[:300]}")
-    _verify(response, publish_at)
+    _verify(response)
     return video_id
 
 
@@ -131,13 +130,11 @@ def _explain_http_error(e):
     return f"YouTube API error HTTP {code}.{hint} Response: {text[:500]}"
 
 
-def _verify(response, requested):
-    """Confirm from the insert response that the video is private and scheduled (no extra OAuth scope needed)."""
+def _verify(response):
+    """Confirm the uploaded video is private."""
     status = response.get("status", {}) or {}
-    privacy, publish_at = status.get("privacyStatus"), status.get("publishAt")
-    log(f"YouTube reports privacyStatus={privacy} publishAt={publish_at}")
-    if privacy != "private" or not publish_at:
-        log("WARNING: the response does not show a scheduled private video. Check the video in YouTube Studio.")
-        print("::warning title=Scheduling not confirmed::YouTube's response did not confirm publishAt. Check YouTube Studio.", flush=True)
-    else:
-        log("scheduled publication confirmed by YouTube")
+    privacy = status.get("privacyStatus")
+    log(f"YouTube reports privacyStatus={privacy}")
+    if privacy != "private":
+        raise RuntimeError("YouTube did not confirm private visibility. Check the video in YouTube Studio.")
+    log("private upload confirmed; schedule manually in YouTube Studio")
