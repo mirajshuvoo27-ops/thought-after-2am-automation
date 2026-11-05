@@ -213,9 +213,14 @@ def draw_icon(d, kind, cx, cy, t, a, b):
 class SceneRenderer:
     """Draws the frames of one scene. Drawing order and parameters match the previous draw_frame()."""
  
-    def __init__(self, text, frames):
+    def __init__(self, text, frames, scene_index=0):
         self.text, self.frames = text, frames
         self.kind = topic_kind(text)
+        # Keep the topic palette coherent, but vary the visual symbol between scenes
+        # so a sequence about the brain does not show the same brain graphic every time.
+        visual_order = ["brain", "idea", "time", "sound", "digital", "emotion", "concept"]
+        base_index = visual_order.index(self.kind)
+        self.visual_kind = visual_order[(base_index + scene_index) % len(visual_order)]
         self.bg = gradient_bg(self.kind)
         _, self.accent, self.accent2 = palette(self.kind)
         self.words = text.split()
@@ -255,7 +260,7 @@ class SceneRenderer:
         d.rounded_rectangle((34, 38, W - 34, 100), radius=22, fill=(5, 12, 30, 175), outline=(*accent, 150), width=2)
         d.text((W // 2, 69), "THOUGHT AFTER 2AM", font=font(23), fill=(239, 244, 255, 255), anchor="mm")
         # Large animated visual in upper-middle
-        draw_icon(d, self.kind, W // 2, 410, t, accent, accent2)
+        draw_icon(d, self.visual_kind, W // 2, 410, t, accent, accent2)
         # Topic label above subtitle
         d.text((W // 2, 650), self.label, font=font(20), fill=(*accent, 255), anchor="mm")
         # Full-sentence subtitles: show the complete phrase immediately and hold it
@@ -370,7 +375,7 @@ def render_video(scenes, slot, final_path):
         try:
             for si, (text, frames) in enumerate(zip(texts, frames_per), 1):
                 scene_start = time.monotonic()
-                renderer = SceneRenderer(text, frames)
+                renderer = SceneRenderer(text, frames, scene_index=si - 1)
                 for n in range(frames):
                     proc.stdin.write(renderer.frame(n))
                 done += frames
