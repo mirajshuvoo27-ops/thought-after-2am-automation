@@ -2,11 +2,11 @@ name: Thought After 2AM - Scheduled Shorts
 
 on:
   schedule:
-    # GitHub cron is always in UTC. Each run starts ONE HOUR before its publication time.
-    #   Morning: starts 00:00 UTC (06:00 Bangladesh) -> publishes 01:00 UTC (07:00 Bangladesh)
-    #   Evening: starts 14:00 UTC (20:00 Bangladesh) -> publishes 15:00 UTC (21:00 Bangladesh)
-    - cron: '0 0 * * *'
-    - cron: '0 14 * * *'
+    # GitHub cron is UTC. Uploads are private, so start at the intended Bangladesh slot times.
+    #   Morning: 01:00 UTC = 07:00 Bangladesh
+    #   Evening: 15:00 UTC = 21:00 Bangladesh
+    - cron: '0 1 * * *'
+    - cron: '0 15 * * *'
   workflow_dispatch:
     inputs:
       slot:
