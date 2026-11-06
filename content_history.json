@@ -10,6 +10,17 @@
       "publish_at": null,
       "manual_schedule": true,
       "script_sha256": "e97b7bba3681fab424b8b559c8809f4ca12748ca9dba969940f78fcb93584f44"
+    },
+    {
+      "recorded_at": "2026-11-06T20:49:20+00:00",
+      "slot": "evening",
+      "title": "The spotlight effect: people notice your embarrassing moments far le",
+      "topic": "spotlight-effect",
+      "source": "Gilovich T, Medvec VH, Savitsky K. The spotlight effect in social judgment. Journal of Personality and Social Psychology, 2000.",
+      "video_id": "xbx_Um6sClk",
+      "publish_at": null,
+      "manual_schedule": true,
+      "script_sha256": "bf6fff8adc3ab2b267817e22e657955a4061626685fa8cc77bddec3c3fdc8b71"
     }
   ]
 }
