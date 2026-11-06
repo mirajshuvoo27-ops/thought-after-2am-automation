@@ -1,3 +1,15 @@
 {
-  "videos": []
+  "videos": [
+    {
+      "recorded_at": "2026-11-06T07:49:22+00:00",
+      "slot": "evening",
+      "title": "Why worries feel bigger when you're sleep-deprived",
+      "topic": "sleep-loss-amygdala",
+      "source": "Yoo SS, Gujar N, Hu P, Jolesz FA, Walker MP. The human emotional brain without sleep: a prefrontal amygdala disconnect. Current Biology, 2007.",
+      "video_id": "rRSJdqxeMb0",
+      "publish_at": null,
+      "manual_schedule": true,
+      "script_sha256": "e97b7bba3681fab424b8b559c8809f4ca12748ca9dba969940f78fcb93584f44"
+    }
+  ]
 }
