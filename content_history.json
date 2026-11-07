@@ -32,6 +32,17 @@
       "publish_at": null,
       "manual_schedule": true,
       "script_sha256": "41d3e074dd45ce23f286045d13ea0e6cf62417f5b7be6aefa8a10365f1aee5e3"
+    },
+    {
+      "recorded_at": "2026-11-07T19:15:10+00:00",
+      "slot": "evening",
+      "title": "The frequency illusion",
+      "topic": "frequency-illusion",
+      "source": "Arnold Zwicky, Language Log posts naming the 'frequency illusion'.",
+      "video_id": "lOwPL4XubyY",
+      "publish_at": null,
+      "manual_schedule": true,
+      "script_sha256": "70397bba59da1fe6abe00354c82183943b5f06864a08e0181510489e3a794aa4"
     }
   ]
 }
