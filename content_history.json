@@ -21,6 +21,17 @@
       "publish_at": null,
       "manual_schedule": true,
       "script_sha256": "bf6fff8adc3ab2b267817e22e657955a4061626685fa8cc77bddec3c3fdc8b71"
+    },
+    {
+      "recorded_at": "2026-11-07T06:56:10+00:00",
+      "slot": "evening",
+      "title": "Why your voice sounds different on a recording",
+      "topic": "voice-recording",
+      "source": "Maurer D, Landis T. Role of bone conduction in the self-perception of speech. Folia Phoniatrica, 1990.",
+      "video_id": "_JUnPl_Yuq8",
+      "publish_at": null,
+      "manual_schedule": true,
+      "script_sha256": "41d3e074dd45ce23f286045d13ea0e6cf62417f5b7be6aefa8a10365f1aee5e3"
     }
   ]
 }
