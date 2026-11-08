@@ -1,4 +1,4 @@
-"""Upload a video to YouTube as PRIVATE for manual scheduling in YouTube Studio.
+"""Publish a video to YouTube with PUBLIC visibility immediately.
 
 Uses the same three OAuth secrets as before: YOUTUBE_CLIENT_ID, YOUTUBE_CLIENT_SECRET, YOUTUBE_REFRESH_TOKEN.
 """
@@ -46,7 +46,7 @@ def _credentials():
 
 
 def build_body(data, publish_at=None):
-    """The videos.insert request body. Video remains private until manually scheduled."""
+    """Build the videos.insert request body for immediate public visibility."""
     return {
         "snippet": {
             "title": str(data["title"])[:100],
@@ -55,14 +55,14 @@ def build_body(data, publish_at=None):
             "categoryId": "27",  # Education
         },
         "status": {
-            "privacyStatus": "private",
+            "privacyStatus": "public",
             "selfDeclaredMadeForKids": False,
         },
     }
 
 
-def upload_private(path, data):
-    """Upload `path` as private. Returns the YouTube video id."""
+def upload_public(path, data):
+    """Publish `path` publicly immediately. Returns the YouTube video id."""
     from googleapiclient.discovery import build
     from googleapiclient.errors import HttpError
     from googleapiclient.http import MediaFileUpload
@@ -71,7 +71,7 @@ def upload_private(path, data):
     yt = build("youtube", "v3", credentials=creds, cache_discovery=False)
     body = build_body(data)
     size_mb = os.path.getsize(path) / 1e6
-    log(f"uploading {path} ({size_mb:.1f} MB) as PRIVATE for manual scheduling")
+    log(f"uploading {path} ({size_mb:.1f} MB) with PUBLIC visibility")
     media = MediaFileUpload(str(path), mimetype="video/mp4", chunksize=CHUNK_SIZE, resumable=True)
     request = yt.videos().insert(part="snippet,status", body=body, media_body=media)
 
@@ -131,10 +131,10 @@ def _explain_http_error(e):
 
 
 def _verify(response):
-    """Confirm the uploaded video is private."""
+    """Confirm YouTube accepted the video with public visibility."""
     status = response.get("status", {}) or {}
     privacy = status.get("privacyStatus")
     log(f"YouTube reports privacyStatus={privacy}")
-    if privacy != "private":
-        raise RuntimeError("YouTube did not confirm private visibility. Check the video in YouTube Studio.")
-    log("private upload confirmed; schedule manually in YouTube Studio")
+    if privacy != "public":
+        raise RuntimeError("YouTube did not confirm public visibility. Check the video in YouTube Studio.")
+    log("public publishing confirmed")
