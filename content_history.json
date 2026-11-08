@@ -43,6 +43,17 @@
       "publish_at": null,
       "manual_schedule": true,
       "script_sha256": "70397bba59da1fe6abe00354c82183943b5f06864a08e0181510489e3a794aa4"
+    },
+    {
+      "recorded_at": "2026-11-08T07:03:54+00:00",
+      "slot": "evening",
+      "title": "Hypnic jerks: why your body twitches as you fall asleep",
+      "topic": "hypnic-jerks",
+      "source": "General clinical overviews of sleep starts, e.g., Sleep Foundation and Mayo Clinic Health System.",
+      "video_id": "7V8DdqgyUQ4",
+      "publish_at": null,
+      "manual_schedule": true,
+      "script_sha256": "b292fd53844ec11608cfa5fefb248141298ae71af42bbdc0121b5cb45850385d"
     }
   ]
 }
