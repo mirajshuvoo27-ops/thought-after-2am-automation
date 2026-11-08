@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Thought After 2AM - render one Short and upload it privately for manual scheduling.
+"""Thought After 2AM - render one Short and publish it publicly on YouTube.
  
 Run by the GitHub workflow after generate_script.py has written video_<slot>.json.
     VIDEO_SLOT = morning | evening      (or --slot)
@@ -466,10 +466,10 @@ def main(argv=None):
         write_step_summary([f"### Dry run: {slot}", f"**{data['title']}** rendered ({seconds:.0f}s). Nothing was uploaded."])
         return
  
-    stage("Upload to YouTube (PRIVATE; schedule manually in Studio)")
-    from youtube_upload import upload_private
-    video_id = upload_private(final, data)
-    log(f"Uploaded private video id: {video_id}  https://youtu.be/{video_id}")
+    stage("Publish to YouTube (PUBLIC)")
+    from youtube_upload import upload_public
+    video_id = upload_public(final, data)
+    log(f"Published public video id: {video_id}  https://youtu.be/{video_id}")
     end_stage()
 
     try:
@@ -481,7 +481,8 @@ def main(argv=None):
             "source": data.get("source", ""),
             "video_id": video_id,
             "publish_at": None,
-            "manual_schedule": True,
+            "manual_schedule": False,
+            "visibility": "public",
             "script_sha256": history.script_hash(data),
         })
         log("history updated")
@@ -490,10 +491,10 @@ def main(argv=None):
         print(f"::warning title=History not updated::{e}", flush=True)
  
     write_step_summary([
-        f"### Private {slot} Short",
+        f"### Public {slot} Short",
         f"- **{data['title']}**",
-        f"- Video: https://youtu.be/{video_id} (uploaded as Private)",
-        "- Next step: schedule the video manually in YouTube Studio.",
+        f"- Video: https://youtu.be/{video_id} (published as Public)",
+        "- The video is public on YouTube; no manual scheduling is needed.",
     ])
     log("DONE")
  
