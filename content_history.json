@@ -66,6 +66,18 @@
       "manual_schedule": false,
       "visibility": "public",
       "script_sha256": "dfafe34b5e5be26768f3296f9f464d8034b5303cf58c4a08189bd787b3500844"
+    },
+    {
+      "recorded_at": "2026-11-08T19:18:07+00:00",
+      "slot": "evening",
+      "title": "Researchers made people remember something that never happened",
+      "topic": "false-memory-mall",
+      "source": "Loftus EF, Pickrell JE. The formation of false memories. Psychiatric Annals, 1995.",
+      "video_id": "FOORiDw-4RI",
+      "publish_at": null,
+      "manual_schedule": false,
+      "visibility": "public",
+      "script_sha256": "3baa2d748bc61cc577a495befef638def60d1db190fcf79c2929439871b0a679"
     }
   ]
 }
