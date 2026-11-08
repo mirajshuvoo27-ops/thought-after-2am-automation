@@ -2,7 +2,7 @@ name: Thought After 2AM - Scheduled Shorts
 
 on:
   schedule:
-    # GitHub cron is UTC. Uploads are private, so start at the intended Bangladesh slot times.
+    # GitHub cron is UTC. Publish Shorts publicly at the intended Bangladesh slot times.
     #   Morning: 01:00 UTC = 07:00 Bangladesh
     #   Evening: 15:00 UTC = 21:00 Bangladesh
     - cron: '0 1 * * *'
@@ -36,7 +36,7 @@ jobs:
       YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
       YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
       YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
-      VIDEO_SLOT: ${{ github.event_name == 'workflow_dispatch' && inputs.slot || (github.event.schedule == '0 0 * * *' && 'morning' || 'evening') }}
+      VIDEO_SLOT: ${{ github.event_name == 'workflow_dispatch' && inputs.slot || (github.event.schedule == '0 1 * * *' && 'morning' || 'evening') }}
       DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && 'true' || 'false' }}
       PYTHONUNBUFFERED: "1"
     steps:
@@ -76,7 +76,7 @@ jobs:
       - name: Generate today's script (Free Mode topic bank)
         run: python generate_script.py --slot "$VIDEO_SLOT"
 
-      - name: Render video and upload privately for manual scheduling
+      - name: Render video and publish publicly to YouTube
         run: python main.py
 
       - name: Commit content history
@@ -89,7 +89,7 @@ jobs:
             echo "No history changes to commit."
             exit 0
           fi
-          git commit -m "chore: record private ${VIDEO_SLOT} short"
+          git commit -m "chore: record public ${VIDEO_SLOT} short"
           for attempt in 1 2 3; do
             if git push origin "HEAD:${GITHUB_REF_NAME}"; then
               exit 0
