@@ -78,6 +78,18 @@
       "manual_schedule": false,
       "visibility": "public",
       "script_sha256": "3baa2d748bc61cc577a495befef638def60d1db190fcf79c2929439871b0a679"
+    },
+    {
+      "recorded_at": "2026-11-09T07:47:59+00:00",
+      "slot": "morning",
+      "title": "Why unfinished tasks keep nagging you, and what helps",
+      "topic": "unfinished-tasks-plan",
+      "source": "Masicampo EJ, Baumeister RF. Consider it done! Plan making can eliminate the cognitive effects of unfulfilled goals. Journal of Personality and Social Psychology, 2011.",
+      "video_id": "wKhJhIfgthE",
+      "publish_at": null,
+      "manual_schedule": false,
+      "visibility": "public",
+      "script_sha256": "d90f3909a4781c41be2ed73952b0e149a5324af5932efafc4f0d9f1ca74af3e3"
     }
   ]
 }
