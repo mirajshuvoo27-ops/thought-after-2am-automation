@@ -102,6 +102,18 @@
       "manual_schedule": false,
       "visibility": "public",
       "script_sha256": "27f1e65718e7a8d77a67a7f354f5726fa10208392596a87710f7bf7d95dc0f09"
+    },
+    {
+      "recorded_at": "2026-11-10T08:12:42+00:00",
+      "slot": "morning",
+      "title": "Sleep paralysis: waking up unable to move",
+      "topic": "sleep-paralysis",
+      "source": "Sharpless BA, Barber JP. Lifetime prevalence rates of sleep paralysis: a systematic review. Sleep Medicine Reviews, 2011.",
+      "video_id": "wR-nNOQ9NQ8",
+      "publish_at": null,
+      "manual_schedule": false,
+      "visibility": "public",
+      "script_sha256": "87a905c454f1423ca2d4047b8a67cfc6bf802680680a876684f792b6bbda9448"
     }
   ]
 }
