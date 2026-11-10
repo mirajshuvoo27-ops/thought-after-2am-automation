@@ -114,6 +114,18 @@
       "manual_schedule": false,
       "visibility": "public",
       "script_sha256": "87a905c454f1423ca2d4047b8a67cfc6bf802680680a876684f792b6bbda9448"
+    },
+    {
+      "recorded_at": "2026-11-10T21:11:00+00:00",
+      "slot": "evening",
+      "title": "The invisible gorilla: how you can miss something obvious",
+      "topic": "invisible-gorilla",
+      "source": "Simons DJ, Chabris CF. Gorillas in our midst: sustained inattentional blindness for dynamic events. Perception, 1999.",
+      "video_id": "3Gw6fUmqxW0",
+      "publish_at": null,
+      "manual_schedule": false,
+      "visibility": "public",
+      "script_sha256": "ed077ebc5eb8c5116e5c5bab0a501761c86917e42cb070aec2a8d8c7ed66c880"
     }
   ]
 }
