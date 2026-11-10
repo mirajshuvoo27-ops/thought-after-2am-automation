@@ -90,6 +90,18 @@
       "manual_schedule": false,
       "visibility": "public",
       "script_sha256": "d90f3909a4781c41be2ed73952b0e149a5324af5932efafc4f0d9f1ca74af3e3"
+    },
+    {
+      "recorded_at": "2026-11-10T07:27:29+00:00",
+      "slot": "morning",
+      "title": "Phantom vibrations: feeling a buzz your phone never made",
+      "topic": "phantom-vibration",
+      "source": "Rothberg MB, et al. Phantom vibration syndrome among medical staff: a cross sectional survey. BMJ, 2010.",
+      "video_id": "AZZrqEvI9n8",
+      "publish_at": null,
+      "manual_schedule": false,
+      "visibility": "public",
+      "script_sha256": "27f1e65718e7a8d77a67a7f354f5726fa10208392596a87710f7bf7d95dc0f09"
     }
   ]
 }
