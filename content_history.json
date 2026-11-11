@@ -126,6 +126,18 @@
       "manual_schedule": false,
       "visibility": "public",
       "script_sha256": "ed077ebc5eb8c5116e5c5bab0a501761c86917e42cb070aec2a8d8c7ed66c880"
+    },
+    {
+      "recorded_at": "2026-11-11T07:38:32+00:00",
+      "slot": "morning",
+      "title": "Your mind wanders almost half the time, and it's linked to feeling l",
+      "topic": "mind-wandering",
+      "source": "Killingsworth MA, Gilbert DT. A wandering mind is an unhappy mind. Science, 2010.",
+      "video_id": "hxV3L_GZTgg",
+      "publish_at": null,
+      "manual_schedule": false,
+      "visibility": "public",
+      "script_sha256": "37fcd47453f85067faed73df16e04f8d8e9072122d85a760ffed38b62a45ca1f"
     }
   ]
 }
