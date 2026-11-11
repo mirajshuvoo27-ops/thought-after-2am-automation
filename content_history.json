@@ -138,6 +138,18 @@
       "manual_schedule": false,
       "visibility": "public",
       "script_sha256": "37fcd47453f85067faed73df16e04f8d8e9072122d85a760ffed38b62a45ca1f"
+    },
+    {
+      "recorded_at": "2026-11-11T21:42:23+00:00",
+      "slot": "evening",
+      "title": "Why you suddenly hear your own name in a noisy room",
+      "topic": "own-name-attention",
+      "source": "Moray N. Attention in dichotic listening: affective cues and the influence of instructions. Quarterly Journal of Experimental Psychology, 1959.",
+      "video_id": "5IS--BVMyX4",
+      "publish_at": null,
+      "manual_schedule": false,
+      "visibility": "public",
+      "script_sha256": "f7a86ac5e5bbde46b7e3a6c0f331ab8627a0baf676aa9ffb2e1a4343a7f74c79"
     }
   ]
 }
