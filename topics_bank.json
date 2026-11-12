@@ -105,6 +105,111 @@
       "fact": "In a small 2010 trial of people with irritable bowel syndrome, patients who were told honestly that their pills were placebos reported more symptom relief than patients who received no treatment.",
       "source": "Kaptchuk TJ, et al. Placebos without deception: a randomized controlled trial in irritable bowel syndrome. PLoS ONE, 2010.",
       "caution": "It was a small trial (about 80 people). Do not claim placebos cure disease or replace treatment. Give no medical advice."
+    },
+    {
+      "id": "doorway-effect",
+      "topic": "Why you forget what you came for after walking into a room",
+      "fact": "Researchers call this the doorway effect. In experiments, people were more likely to forget an object or intention after moving through a doorway than after moving the same distance within one room. One explanation is that crossing a doorway marks a new event in memory.",
+      "source": "Radvansky GA, Copeland DE. Walking through doorways causes forgetting. Quarterly Journal of Experimental Psychology, 2006.",
+      "caution": "Describe it as a finding from laboratory experiments, not something that happens every time. The effect is linked to event boundaries; do not claim doorways erase memories."
+    },
+    {
+      "id": "strange-face-mirror-illusion",
+      "topic": "Why a face can look strange when you stare into a mirror in dim light",
+      "fact": "In a 2010 study, people who stared at their own faces in a dimly lit mirror sometimes reported seeing unusual facial distortions or unfamiliar faces. The researcher suggested that reduced visual detail and adaptation may help explain the illusion.",
+      "source": "Caputo GB. Strange-face-in-the-mirror illusion. Perception, 2010.",
+      "caution": "Keep the explanation grounded in visual perception. Do not frame it as supernatural, paranormal, or evidence of hidden beings. Mention that the study used dim lighting and prolonged staring."
+    },
+    {
+      "id": "semantic-satiation",
+      "topic": "Why a familiar word can start looking completely misspelled",
+      "fact": "Repeatedly saying or looking at the same word can briefly make it feel strange or lose its meaning. Psychologists call this semantic satiation, a temporary effect linked to repetition and reduced access to a word's meaning.",
+      "source": "Smith JD, Klein MA. （Use the established semantic-satiation literature; see Smith & Klein, 1990, on semantic satiation and the recognition of words）.",
+      "caution": "Describe the effect as temporary and not universal. Avoid saying the word actually changes spelling; this is a change in perception or familiarity."
+    },
+    {
+      "id": "stroop-effect",
+      "topic": "Why reading a word can slow you down when its color disagrees",
+      "fact": "In the Stroop task, people are asked to name the ink color of color words. They are usually slower when the word says one color but is printed in another color, because reading the word competes with naming the ink.",
+      "source": "Stroop JR. Studies of interference in serial verbal reactions. Journal of Experimental Psychology, 1935.",
+      "caution": "Say the task often produces slower responses in the conflicting condition. Do not claim everyone has the same reaction time."
+    },
+    {
+      "id": "change-blindness",
+      "topic": "How a big change can happen right in front of you without being noticed",
+      "fact": "In change-blindness experiments, people sometimes fail to notice a major change in a scene when the change happens during a brief interruption. Attention and visual comparison help determine which details people notice.",
+      "source": "Simons DJ, Levin DT. Change blindness. Trends in Cognitive Sciences, 1997.",
+      "caution": "Do not claim people cannot see changes. Explain that noticing depends on attention, timing, and the task."
+    },
+    {
+      "id": "tip-of-the-tongue",
+      "topic": "Why a name can feel almost remembered but still refuse to come out",
+      "fact": "The tip-of-the-tongue state happens when someone feels that a word is available in memory but cannot retrieve it at that moment. People may remember clues such as the word's first sound or number of syllables.",
+      "source": "Brown R, McNeill D. The tip of the tongue phenomenon. Journal of Verbal Learning and Verbal Behavior, 1966.",
+      "caution": "Keep it as a common memory-retrieval experience. Do not describe it as proof that a memory is permanently stored or that a particular clue always helps."
+    },
+    {
+      "id": "spacing-effect",
+      "topic": "Why studying in several short sessions can help memory",
+      "fact": "The spacing effect is the finding that learning spread across separate sessions often leads to better long-term memory than spending the same total time in one massed session. The best gap depends on how long the information needs to be remembered.",
+      "source": "Cepeda NJ, et al. Distributed practice in verbal recall tasks: a review and quantitative synthesis. Psychological Bulletin, 2006.",
+      "caution": "Do not promise a guaranteed grade or give one perfect schedule for everyone. Say spaced practice often helps long-term retention."
+    },
+    {
+      "id": "testing-effect",
+      "topic": "Why trying to remember can teach you more than rereading",
+      "fact": "In memory experiments, people who practiced retrieving information from memory often remembered more later than people who spent the same time simply restudying it. Researchers call this the testing effect or retrieval-practice effect.",
+      "source": "Roediger HL, Karpicke JD. Test-enhanced learning: taking memory tests improves long-term retention. Psychological Science, 2006.",
+      "caution": "Clarify that low-stakes practice retrieval can support learning; do not suggest that all tests are beneficial or that rereading is useless."
+    },
+    {
+      "id": "mere-exposure-effect",
+      "topic": "Why something can feel more likable just because it seems familiar",
+      "fact": "The mere-exposure effect describes how repeated exposure to a stimulus can sometimes increase a person's liking for it. Researchers have observed the effect with items such as shapes, symbols, and sounds.",
+      "source": "Zajonc RB. Attitudinal effects of mere exposure. Journal of Personality and Social Psychology Monograph Supplement, 1968.",
+      "caution": "Use 'can' and 'sometimes'. Repetition does not make everyone like everything; familiarity can also have limits or backfire."
+    },
+    {
+      "id": "misinformation-effect",
+      "topic": "How a question after an event can influence what someone remembers",
+      "fact": "In a classic experiment, people who watched a traffic accident described it differently depending on the wording of a later question. The wording influenced some estimates of how fast the cars had been moving.",
+      "source": "Loftus EF, Palmer JC. Reconstruction of automobile destruction: an example of the interaction between language and memory. Journal of Verbal Learning and Verbal Behavior, 1974.",
+      "caution": "Say wording influenced reports in the experiment, not that every question changes a memory. Avoid implying all memories are unreliable."
+    },
+    {
+      "id": "peak-end-rule",
+      "topic": "Why the ending of an experience can shape how you remember it",
+      "fact": "In studies of remembered experiences, people's overall evaluations were strongly related to how intense the experience felt at its peak and how it ended. Researchers called this pattern the peak-end rule.",
+      "source": "Kahneman D, Fredrickson BL, Schreiber CA, Redelmeier DA. When more pain is preferred to less: adding a better end. Psychological Science, 1993.",
+      "caution": "Do not claim the peak and ending are the only things people remember. Explain that this is one influence on retrospective evaluation."
+    },
+    {
+      "id": "serial-position-effect",
+      "topic": "Why the first and last items on a list can be easiest to remember",
+      "fact": "In free-recall experiments, people often remember items near the beginning and end of a list better than items in the middle. Researchers call these patterns the primacy and recency effects.",
+      "source": "Murdock BB Jr. The serial position effect of free recall. Journal of Experimental Psychology, 1962.",
+      "caution": "Say 'often' and keep the finding tied to list-learning tasks. Do not claim the middle items are always forgotten."
+    },
+    {
+      "id": "mcgurk-effect",
+      "topic": "How what you see can change what you think you hear",
+      "fact": "In the McGurk effect, a person's view of mouth movements can change the speech sound they think they hear, even when the audio stays the same. It shows that speech perception combines information from more than one sense.",
+      "source": "McGurk H, MacDonald J. Hearing lips and seeing voices. Nature, 1976.",
+      "caution": "Explain that the illusion depends on the particular audio and visual pairing and does not happen in every situation."
+    },
+    {
+      "id": "rubber-hand-illusion",
+      "topic": "Why your brain can briefly treat a fake hand as your own",
+      "fact": "In the rubber-hand illusion, a participant watches a fake hand being stroked while their hidden real hand is stroked in sync. Some participants begin to feel that the fake hand belongs to them.",
+      "source": "Botvinick M, Cohen J. Rubber hands 'feel' touch that eyes see. Nature, 1998.",
+      "caution": "Describe this as a controlled laboratory illusion. Do not claim the brain permanently changes body ownership or that everyone experiences it."
+    },
+    {
+      "id": "false-consensus-effect",
+      "topic": "Why we sometimes assume everyone thinks the way we do",
+      "fact": "The false-consensus effect is a tendency to overestimate how common our own opinions or behaviors are among other people. It has been demonstrated in social-psychology experiments, though its size can vary by situation.",
+      "source": "Ross L, Greene D, House P. The false consensus effect: an egocentric bias in social perception and attribution processes. Journal of Experimental Social Psychology, 1977.",
+      "caution": "Present it as a tendency, not a rule. Do not imply people always assume everyone agrees with them."
     }
   ]
 }
