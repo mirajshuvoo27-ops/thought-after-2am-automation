@@ -93,20 +93,6 @@
       "caution": "Say 'about a third'. Do not claim the brain 'understands everything' it ignores."
     },
     {
-      "id": "anchoring-effect",
-      "topic": "The anchoring effect: how a random number can sway your guess",
-      "fact": "In a classic experiment, people spun a wheel that was rigged to land on 10 or 65, then estimated the percentage of African countries in the United Nations. The median estimates were about 25 for the group that saw 10 and about 45 for the group that saw 65.",
-      "source": "Tversky A, Kahneman D. Judgment under uncertainty: heuristics and biases. Science, 1974.",
-      "caution": "Say 'median estimate'. Do not claim anchors control all decisions."
-    },
-    {
-      "id": "open-label-placebo",
-      "topic": "A placebo can help even when you know it's a placebo",
-      "fact": "In a small 2010 trial of people with irritable bowel syndrome, patients who were told honestly that their pills were placebos reported more symptom relief than patients who received no treatment.",
-      "source": "Kaptchuk TJ, et al. Placebos without deception: a randomized controlled trial in irritable bowel syndrome. PLoS ONE, 2010.",
-      "caution": "It was a small trial (about 80 people). Do not claim placebos cure disease or replace treatment. Give no medical advice."
-    },
-    {
       "id": "doorway-effect",
       "topic": "Why you forget what you came for after walking into a room",
       "fact": "Researchers call this the doorway effect. In experiments, people were more likely to forget an object or intention after moving through a doorway than after moving the same distance within one room. One explanation is that crossing a doorway marks a new event in memory.",
@@ -210,6 +196,20 @@
       "fact": "The false-consensus effect is a tendency to overestimate how common our own opinions or behaviors are among other people. It has been demonstrated in social-psychology experiments, though its size can vary by situation.",
       "source": "Ross L, Greene D, House P. The false consensus effect: an egocentric bias in social perception and attribution processes. Journal of Experimental Social Psychology, 1977.",
       "caution": "Present it as a tendency, not a rule. Do not imply people always assume everyone agrees with them."
+    },
+    {
+      "id": "anchoring-effect",
+      "topic": "The anchoring effect: how a random number can sway your guess",
+      "fact": "In a classic experiment, people spun a wheel that was rigged to land on 10 or 65, then estimated the percentage of African countries in the United Nations. The median estimates were about 25 for the group that saw 10 and about 45 for the group that saw 65.",
+      "source": "Tversky A, Kahneman D. Judgment under uncertainty: heuristics and biases. Science, 1974.",
+      "caution": "Say 'median estimate'. Do not claim anchors control all decisions."
+    },
+    {
+      "id": "open-label-placebo",
+      "topic": "A placebo can help even when you know it's a placebo",
+      "fact": "In a small 2010 trial of people with irritable bowel syndrome, patients who were told honestly that their pills were placebos reported more symptom relief than patients who received no treatment.",
+      "source": "Kaptchuk TJ, et al. Placebos without deception: a randomized controlled trial in irritable bowel syndrome. PLoS ONE, 2010.",
+      "caution": "It was a small trial (about 80 people). Do not claim placebos cure disease or replace treatment. Give no medical advice."
     }
   ]
 }
