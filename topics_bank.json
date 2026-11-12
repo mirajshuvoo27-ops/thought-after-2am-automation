@@ -122,9 +122,9 @@
     },
     {
       "id": "semantic-satiation",
-      "topic": "Why a familiar word can start looking completely misspelled",
+      "topic": "Why familiar words can start looking completely misspelled after repetition",
       "fact": "Repeatedly saying or looking at the same word can briefly make it feel strange or lose its meaning. Psychologists call this semantic satiation, a temporary effect linked to repetition and reduced access to a word's meaning.",
-      "source": "Smith JD, Klein MA. （Use the established semantic-satiation literature; see Smith & Klein, 1990, on semantic satiation and the recognition of words）.",
+      "source": "Smith L, Klein R. Evidence for semantic satiation: Repeating a category slows subsequent semantic processing. Journal of Experimental Psychology: Learning, Memory, and Cognition, 1990;16(5):852-861. https://doi.org/10.1037/0278-7393.16.5.852",
       "caution": "Describe the effect as temporary and not universal. Avoid saying the word actually changes spelling; this is a change in perception or familiarity."
     },
     {
