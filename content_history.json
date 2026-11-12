@@ -150,6 +150,18 @@
       "manual_schedule": false,
       "visibility": "public",
       "script_sha256": "f7a86ac5e5bbde46b7e3a6c0f331ab8627a0baf676aa9ffb2e1a4343a7f74c79"
+    },
+    {
+      "recorded_at": "2026-11-12T21:42:07+00:00",
+      "slot": "evening",
+      "title": "Why you forget what you came for after walking into a room",
+      "topic": "doorway-effect",
+      "source": "Radvansky GA, Copeland DE. Walking through doorways causes forgetting. Quarterly Journal of Experimental Psychology, 2006.",
+      "video_id": "IrnC054xRvg",
+      "publish_at": null,
+      "manual_schedule": false,
+      "visibility": "public",
+      "script_sha256": "f91bb60e838af5d6dcd361eb861bf634bfb11876c603d457b90adf23d9eac16f"
     }
   ]
 }
