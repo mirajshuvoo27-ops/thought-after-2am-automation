@@ -174,6 +174,18 @@
       "manual_schedule": false,
       "visibility": "public",
       "script_sha256": "bee7bcd32b977d27298abeb71789c803e472df3c40fe5346923334cbc899d3f7"
+    },
+    {
+      "recorded_at": "2026-11-13T21:09:21+00:00",
+      "slot": "evening",
+      "title": "Why familiar words can start looking completely misspelled after rep",
+      "topic": "semantic-satiation",
+      "source": "Smith L, Klein R. Evidence for semantic satiation: Repeating a category slows subsequent semantic processing. Journal of Experimental Psychology: Learning, Memory, and Cognition, 1990;16(5):852-861. https://doi.org/10.1037/0278-7393.16.5.852",
+      "video_id": "rARQ_uzfDVA",
+      "publish_at": null,
+      "manual_schedule": false,
+      "visibility": "public",
+      "script_sha256": "92f7f5d07dff3f41862a7f5fa408d7d3d16d866a7a23cb7d523d0702841c0090"
     }
   ]
 }
