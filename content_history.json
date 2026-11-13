@@ -162,6 +162,18 @@
       "manual_schedule": false,
       "visibility": "public",
       "script_sha256": "f91bb60e838af5d6dcd361eb861bf634bfb11876c603d457b90adf23d9eac16f"
+    },
+    {
+      "recorded_at": "2026-11-13T07:42:32+00:00",
+      "slot": "morning",
+      "title": "Why a face can look strange when you stare into a mirror in dim ligh",
+      "topic": "strange-face-mirror-illusion",
+      "source": "Caputo GB. Strange-face-in-the-mirror illusion. Perception, 2010.",
+      "video_id": "bqQYWi5KiOY",
+      "publish_at": null,
+      "manual_schedule": false,
+      "visibility": "public",
+      "script_sha256": "bee7bcd32b977d27298abeb71789c803e472df3c40fe5346923334cbc899d3f7"
     }
   ]
 }
