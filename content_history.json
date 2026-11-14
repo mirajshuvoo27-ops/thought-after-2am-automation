@@ -198,6 +198,18 @@
       "manual_schedule": false,
       "visibility": "public",
       "script_sha256": "7220290a338fd5d619cd06336af6207d3585ce86a542ed3128f86c8e28475aa2"
+    },
+    {
+      "recorded_at": "2026-11-14T19:40:24+00:00",
+      "slot": "evening",
+      "title": "How a big change can happen right in front of you without being noti",
+      "topic": "change-blindness",
+      "source": "Simons DJ, Levin DT. Change blindness. Trends in Cognitive Sciences, 1997.",
+      "video_id": "m1brnOJh-No",
+      "publish_at": null,
+      "manual_schedule": false,
+      "visibility": "public",
+      "script_sha256": "25ae4f425a07d7f3dfaf2e537e61534764c0de71bf34692f48ccf34dd10eadf0"
     }
   ]
 }
