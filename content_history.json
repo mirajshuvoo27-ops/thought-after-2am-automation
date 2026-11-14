@@ -186,6 +186,18 @@
       "manual_schedule": false,
       "visibility": "public",
       "script_sha256": "92f7f5d07dff3f41862a7f5fa408d7d3d16d866a7a23cb7d523d0702841c0090"
+    },
+    {
+      "recorded_at": "2026-11-14T07:29:12+00:00",
+      "slot": "morning",
+      "title": "Why reading a word can slow you down when its color disagrees",
+      "topic": "stroop-effect",
+      "source": "Stroop JR. Studies of interference in serial verbal reactions. Journal of Experimental Psychology, 1935.",
+      "video_id": "J4__yRHHODA",
+      "publish_at": null,
+      "manual_schedule": false,
+      "visibility": "public",
+      "script_sha256": "7220290a338fd5d619cd06336af6207d3585ce86a542ed3128f86c8e28475aa2"
     }
   ]
 }
