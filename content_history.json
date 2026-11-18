@@ -222,6 +222,18 @@
       "manual_schedule": false,
       "visibility": "public",
       "script_sha256": "e126d40a576778dadb919361dc2aa161b6bc3c3b06b0fe56c042d02b60213421"
+    },
+    {
+      "recorded_at": "2026-11-18T22:28:39+00:00",
+      "slot": "evening",
+      "title": "Why studying in several short sessions can help memory",
+      "topic": "spacing-effect",
+      "source": "Cepeda NJ, et al. Distributed practice in verbal recall tasks: a review and quantitative synthesis. Psychological Bulletin, 2006.",
+      "video_id": "1mJmfihTTTU",
+      "publish_at": null,
+      "manual_schedule": false,
+      "visibility": "public",
+      "script_sha256": "b60832e4c933791682d9947a72b02f89dd9c588c0b4e90f3764f4e20bca8a30e"
     }
   ]
 }
