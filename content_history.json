@@ -246,6 +246,18 @@
       "manual_schedule": false,
       "visibility": "public",
       "script_sha256": "1c5fc7a5f3a0b547427cda4f3f7fd650b2009f8f7b93088a27e393723479759e"
+    },
+    {
+      "recorded_at": "2026-11-19T22:33:55+00:00",
+      "slot": "evening",
+      "title": "Why something can feel more likable just because it seems familiar",
+      "topic": "mere-exposure-effect",
+      "source": "Zajonc RB. Attitudinal effects of mere exposure. Journal of Personality and Social Psychology Monograph Supplement, 1968.",
+      "video_id": "V0PJN8cbiQY",
+      "publish_at": null,
+      "manual_schedule": false,
+      "visibility": "public",
+      "script_sha256": "f8b393d141bf035d26d8fa1b793f1b8504d8bea9b8319ddafe59805481a6550c"
     }
   ]
 }
