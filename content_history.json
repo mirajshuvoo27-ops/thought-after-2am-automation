@@ -234,6 +234,18 @@
       "manual_schedule": false,
       "visibility": "public",
       "script_sha256": "b60832e4c933791682d9947a72b02f89dd9c588c0b4e90f3764f4e20bca8a30e"
+    },
+    {
+      "recorded_at": "2026-11-19T08:37:19+00:00",
+      "slot": "morning",
+      "title": "Why trying to remember can teach you more than rereading",
+      "topic": "testing-effect",
+      "source": "Roediger HL, Karpicke JD. Test-enhanced learning: taking memory tests improves long-term retention. Psychological Science, 2006.",
+      "video_id": "V9oKNC9lQC0",
+      "publish_at": null,
+      "manual_schedule": false,
+      "visibility": "public",
+      "script_sha256": "1c5fc7a5f3a0b547427cda4f3f7fd650b2009f8f7b93088a27e393723479759e"
     }
   ]
 }
