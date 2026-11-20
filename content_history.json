@@ -258,6 +258,18 @@
       "manual_schedule": false,
       "visibility": "public",
       "script_sha256": "f8b393d141bf035d26d8fa1b793f1b8504d8bea9b8319ddafe59805481a6550c"
+    },
+    {
+      "recorded_at": "2026-11-20T08:15:55+00:00",
+      "slot": "morning",
+      "title": "How a question after an event can influence what someone remembers",
+      "topic": "misinformation-effect",
+      "source": "Loftus EF, Palmer JC. Reconstruction of automobile destruction: an example of the interaction between language and memory. Journal of Verbal Learning and Verbal Behavior, 1974.",
+      "video_id": "d43Lgl1P6iQ",
+      "publish_at": null,
+      "manual_schedule": false,
+      "visibility": "public",
+      "script_sha256": "30d0307ffafd204a702d2e282ce5f112800fe92b710c07e0cba7ae5eeda3d19b"
     }
   ]
 }
