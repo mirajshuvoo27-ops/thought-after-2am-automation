@@ -270,6 +270,18 @@
       "manual_schedule": false,
       "visibility": "public",
       "script_sha256": "30d0307ffafd204a702d2e282ce5f112800fe92b710c07e0cba7ae5eeda3d19b"
+    },
+    {
+      "recorded_at": "2026-11-20T22:05:49+00:00",
+      "slot": "evening",
+      "title": "Why the ending of an experience can shape how you remember it",
+      "topic": "peak-end-rule",
+      "source": "Kahneman D, Fredrickson BL, Schreiber CA, Redelmeier DA. When more pain is preferred to less: adding a better end. Psychological Science, 1993.",
+      "video_id": "MJ9yybj0UXs",
+      "publish_at": null,
+      "manual_schedule": false,
+      "visibility": "public",
+      "script_sha256": "13f76686c5bdf364690c44edecd5dc11655720eec001f68e399a43490ecfddd7"
     }
   ]
 }
