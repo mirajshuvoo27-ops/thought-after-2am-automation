@@ -282,6 +282,18 @@
       "manual_schedule": false,
       "visibility": "public",
       "script_sha256": "13f76686c5bdf364690c44edecd5dc11655720eec001f68e399a43490ecfddd7"
+    },
+    {
+      "recorded_at": "2026-11-21T08:08:22+00:00",
+      "slot": "morning",
+      "title": "Why the first and last items on a list can be easiest to remember",
+      "topic": "serial-position-effect",
+      "source": "Murdock BB Jr. The serial position effect of free recall. Journal of Experimental Psychology, 1962.",
+      "video_id": "OH4iGYYcNLA",
+      "publish_at": null,
+      "manual_schedule": false,
+      "visibility": "public",
+      "script_sha256": "645bfaa91de1b78a60d1e07fb8899918767527196125880d6b00fb345fac1016"
     }
   ]
 }
