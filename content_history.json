@@ -306,6 +306,18 @@
       "manual_schedule": false,
       "visibility": "public",
       "script_sha256": "9ed8fb3837f0627870f3957e618798345f840954d5c603550b2aa46685888981"
+    },
+    {
+      "recorded_at": "2026-11-22T07:53:39+00:00",
+      "slot": "morning",
+      "title": "Why your brain can briefly treat a fake hand as your own",
+      "topic": "rubber-hand-illusion",
+      "source": "Botvinick M, Cohen J. Rubber hands 'feel' touch that eyes see. Nature, 1998.",
+      "video_id": "t7o1KWlpFkY",
+      "publish_at": null,
+      "manual_schedule": false,
+      "visibility": "public",
+      "script_sha256": "ff59e3f655ff90b1cf95487dcfb367764c574a0dce09fba728b893036002210f"
     }
   ]
 }
