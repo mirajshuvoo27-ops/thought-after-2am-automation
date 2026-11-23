@@ -193,7 +193,7 @@
     {
       "id": "false-consensus-effect",
       "topic": "Why we sometimes assume everyone thinks the way we do",
-      "fact": "The false-consensus effect is a tendency to overestimate how common our own opinions or behaviors are among other people. It has been demonstrated in social-psychology experiments, though its size can vary by situation.",
+      "fact": "The false-consensus effect is a tendency to overestimate how common our own views are. People may assume their opinions or behaviors are more common than they really are. Social-psychology experiments have demonstrated this tendency. Its strength can vary by situation.",
       "source": "Ross L, Greene D, House P. The false consensus effect: an egocentric bias in social perception and attribution processes. Journal of Experimental Social Psychology, 1977.",
       "caution": "Present it as a tendency, not a rule. Do not imply people always assume everyone agrees with them."
     },
