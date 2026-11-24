@@ -318,6 +318,18 @@
       "manual_schedule": false,
       "visibility": "public",
       "script_sha256": "ff59e3f655ff90b1cf95487dcfb367764c574a0dce09fba728b893036002210f"
+    },
+    {
+      "recorded_at": "2026-11-24T01:59:05+00:00",
+      "slot": "evening",
+      "title": "Why we sometimes assume everyone thinks the way we do",
+      "topic": "false-consensus-effect",
+      "source": "Ross L, Greene D, House P. The false consensus effect: an egocentric bias in social perception and attribution processes. Journal of Experimental Social Psychology, 1977.",
+      "video_id": "pR8vb-F4sMg",
+      "publish_at": null,
+      "manual_schedule": false,
+      "visibility": "public",
+      "script_sha256": "1fd4d85a028f9442ed9173b574301dba93f91dcac3073cad11e83f2acb587f8a"
     }
   ]
 }
