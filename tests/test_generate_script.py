@@ -2,7 +2,7 @@ import json
 import unittest
 from pathlib import Path
 
-from generate_script import _split_narration
+from generate_script import _short_title, _split_narration
 
 
 class NarrationSplitterTests(unittest.TestCase):
@@ -33,6 +33,13 @@ class NarrationSplitterTests(unittest.TestCase):
         chunks = _split_narration(fact)
         self.assertTrue(all(len(chunk.split()) <= 18 for chunk in chunks))
         self.assert_words_preserved(fact, chunks)
+
+    def test_title_truncation_keeps_complete_words(self):
+        full_title = "Why familiar words can start looking completely misspelled after repetition"
+        title = _short_title(full_title)
+        self.assertLessEqual(len(title), 68)
+        self.assertTrue(full_title.startswith(title))
+        self.assertTrue(len(title) == len(full_title) or full_title[len(title)] == " ")
 
     def test_every_vetted_topic_fits_scene_limits(self):
         bank_path = Path(__file__).resolve().parents[1] / "topics_bank.json"
