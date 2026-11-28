@@ -200,7 +200,7 @@
     {
       "id": "anchoring-effect",
       "topic": "The anchoring effect: how a random number can sway your guess",
-      "fact": "In a classic experiment, people spun a wheel that was rigged to land on 10 or 65, then estimated the percentage of African countries in the United Nations. The median estimates were about 25 for the group that saw 10 and about 45 for the group that saw 65.",
+      "fact": "In a classic experiment, people spun a wheel rigged to land on 10 or 65. They then estimated the percentage of African countries in the United Nations. The median estimate was about 25 after seeing 10. It was about 45 after seeing 65.",
       "source": "Tversky A, Kahneman D. Judgment under uncertainty: heuristics and biases. Science, 1974.",
       "caution": "Say 'median estimate'. Do not claim anchors control all decisions."
     },
