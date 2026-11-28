@@ -18,7 +18,7 @@ class NarrationSplitterTests(unittest.TestCase):
     def test_splits_long_clauses_after_commas(self):
         fact = "Researchers presented an initial number, participants considered the question, and their final estimates shifted toward that starting point."
         chunks = _split_narration(fact, max_words=8)
-        self.assertTrue(all(len(chunk.split()) <= 8 for chunk in chunks))
+        self.assertTrue(all(3 <= len(chunk.split()) <= 8 for chunk in chunks))
         self.assert_words_preserved(fact, chunks)
 
     def test_keeps_short_sentences_readable(self):
