@@ -271,7 +271,7 @@ def _split_narration(fact, max_words=18):
                         }:
                             cut = i - 1
                             break
-                piece = " ".join(words[:cut]).rstrip(",;:")
+                piece = " ".join(words[:cut])
                 if current and len(current) + len(piece.split()) > max_words:
                     flush()
                 if current:
