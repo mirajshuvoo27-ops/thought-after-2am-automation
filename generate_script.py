@@ -271,6 +271,11 @@ def _split_narration(fact, max_words=18):
                         }:
                             cut = i - 1
                             break
+                # Avoid leaving a tiny one- or two-word fragment at the end.
+                remainder = len(words) - cut
+                min_tail = max(3, min(6, max_words // 3))
+                if 0 < remainder < min_tail:
+                    cut = max(3, len(words) - min_tail)
                 piece = " ".join(words[:cut])
                 if current and len(current) + len(piece.split()) > max_words:
                     flush()
