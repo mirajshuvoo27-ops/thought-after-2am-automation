@@ -300,7 +300,7 @@ def _split_narration(fact, max_words=18):
 
 def _short_title(value, max_chars=68):
     """Keep generated YouTube titles concise without cutting a word in half."""
-    title = re.sub(r"\\s+", " ", str(value)).strip()
+    title = re.sub(r"\s+", " ", str(value)).strip()
     if len(title) <= max_chars:
         return title
     shortened = title[:max_chars + 1].rsplit(" ", 1)[0].rstrip(" :,-")
