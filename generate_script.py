@@ -236,33 +236,61 @@ def _plain_text(value):
 
 
 def _split_narration(fact, max_words=18):
-    """Split verified facts into short, speakable caption scenes without dropping words."""
+    """Split verified facts into readable caption chunks without losing words."""
     fact = _plain_text(fact)
-    sentences = [x.strip() for x in re.split(r"(?<=[.!?])\s+", fact) if x.strip()]
+    sentences = [x.strip() for x in re.split(r"(?<=[.!?])\\s+", fact) if x.strip()]
     chunks = []
-    for sentence in sentences:
-        if len(sentence.split()) <= max_words:
-            chunks.append(sentence)
-            continue
-        # Prefer natural clause boundaries; only split at commas/semicolons/colons.
-        clauses = [x.strip() for x in re.split(r"(?<=[,;:])\s+", sentence) if x.strip()]
-        if len(clauses) == 1:
-            raise RuntimeError(
-                "A verified fact sentence is too long for a readable caption. "
-                "Rewrite that sentence in topics_bank.json without changing its meaning."
-            )
-        current = ""
-        for clause in clauses:
-            candidate = (current + " " + clause).strip()
-            if current and len(candidate.split()) > max_words:
-                chunks.append(current)
-                current = clause
-            else:
-                current = candidate
-        if current:
-            chunks.append(current)
-    return chunks
 
+    for sentence in sentences:
+        clauses = [x.strip() for x in re.split(r"(?<=[,;:])\\s+", sentence) if x.strip()]
+        current = []
+
+        def flush():
+            if current:
+                chunks.append(" ".join(current))
+                current.clear()
+
+        for clause in clauses:
+            words = clause.split()
+            # A clause can itself exceed the limit. Split it at a natural
+            # punctuation/conjunction boundary when possible, otherwise at
+            # the word limit. This fallback prevents a single long sentence
+            # from stopping an entire scheduled upload.
+            while len(words) > max_words:
+                cut = max_words
+                lower = max(7, max_words // 2)
+                for i in range(max_words, lower, -1):
+                    if words[i - 1].endswith((",", ";", ":")):
+                        cut = i
+                        break
+                else:
+                    for i in range(max_words, lower, -1):
+                        if words[i - 1].lower().strip(",;:") in {
+                            "and", "but", "while", "because", "although",
+                            "which", "where", "when", "so"
+                        }:
+                            cut = i - 1
+                            break
+                piece = " ".join(words[:cut]).rstrip(",;:")
+                if current and len(current) + len(piece.split()) > max_words:
+                    flush()
+                if current:
+                    current.extend(piece.split())
+                    flush()
+                else:
+                    chunks.append(piece)
+                words = words[cut:]
+
+            if words:
+                if current and len(current) + len(words) > max_words:
+                    flush()
+                current.extend(words)
+        flush()
+
+    # Defensive checks: never silently drop words or emit an oversized caption.
+    if any(len(chunk.split()) > max_words for chunk in chunks):
+        raise RuntimeError("Internal caption splitter error: a chunk exceeds the word limit.")
+    return chunks
 
 def generate(slot, entries, use_bank=True):
     """Build a concise, source-faithful script from one unused vetted topic."""
