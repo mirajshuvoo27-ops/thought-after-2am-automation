@@ -330,6 +330,18 @@
       "manual_schedule": false,
       "visibility": "public",
       "script_sha256": "1fd4d85a028f9442ed9173b574301dba93f91dcac3073cad11e83f2acb587f8a"
+    },
+    {
+      "recorded_at": "2026-11-28T08:45:47+00:00",
+      "slot": "morning",
+      "title": "The anchoring effect: how a random number can sway your guess",
+      "topic": "anchoring-effect",
+      "source": "Tversky A, Kahneman D. Judgment under uncertainty: heuristics and biases. Science, 1974.",
+      "video_id": "euniliXTq_A",
+      "publish_at": null,
+      "manual_schedule": false,
+      "visibility": "public",
+      "script_sha256": "f945242c891129df6205c781bc735c88321f100735a7a660a84c460a0bc0af40"
     }
   ]
 }
