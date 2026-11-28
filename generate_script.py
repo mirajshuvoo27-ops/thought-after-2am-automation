@@ -297,6 +297,16 @@ def _split_narration(fact, max_words=18):
         raise RuntimeError("Internal caption splitter error: a chunk exceeds the word limit.")
     return chunks
 
+
+def _short_title(value, max_chars=68):
+    """Keep generated YouTube titles concise without cutting a word in half."""
+    title = re.sub(r"\\s+", " ", str(value)).strip()
+    if len(title) <= max_chars:
+        return title
+    shortened = title[:max_chars + 1].rsplit(" ", 1)[0].rstrip(" :,-")
+    return shortened or title[:max_chars].rstrip()
+
+
 def generate(slot, entries, use_bank=True):
     """Build a concise, source-faithful script from one unused vetted topic."""
     bank_topic = pick_bank_topic(entries)
@@ -325,7 +335,7 @@ def generate(slot, entries, use_bank=True):
 
     raw = {
         "topic": bank_topic["id"],
-        "title": topic[:68] if len(topic) >= 10 else "A psychology detail worth thinking about",
+        "title": _short_title(topic) if len(topic) >= 10 else "A psychology detail worth thinking about",
         "summary": "A short, source-based look at " + topic.lower() + ".",
         "hashtags": ["psychology", "brainfacts", "science"],
         "tags": ["psychology facts", "brain facts", "human behavior", "science", "thought after 2am"],
