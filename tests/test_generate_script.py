@@ -1,4 +1,6 @@
+import json
 import unittest
+from pathlib import Path
 
 from generate_script import _split_narration
 
@@ -31,6 +33,15 @@ class NarrationSplitterTests(unittest.TestCase):
         chunks = _split_narration(fact)
         self.assertTrue(all(len(chunk.split()) <= 18 for chunk in chunks))
         self.assert_words_preserved(fact, chunks)
+
+    def test_every_vetted_topic_fits_scene_limits(self):
+        bank_path = Path(__file__).resolve().parents[1] / "topics_bank.json"
+        topics = json.loads(bank_path.read_text(encoding="utf-8"))["topics"]
+        for topic in topics:
+            with self.subTest(topic=topic["id"]):
+                chunks = _split_narration(topic["fact"])
+                self.assertTrue(all(len(chunk.split()) <= 18 for chunk in chunks))
+                self.assertLessEqual(len(chunks) + 2, 10)
 
 
 if __name__ == "__main__":
