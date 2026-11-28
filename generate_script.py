@@ -238,11 +238,11 @@ def _plain_text(value):
 def _split_narration(fact, max_words=18):
     """Split verified facts into readable caption chunks without losing words."""
     fact = _plain_text(fact)
-    sentences = [x.strip() for x in re.split(r"(?<=[.!?])\\s+", fact) if x.strip()]
+    sentences = [x.strip() for x in re.split(r"(?<=[.!?])\s+", fact) if x.strip()]
     chunks = []
 
     for sentence in sentences:
-        clauses = [x.strip() for x in re.split(r"(?<=[,;:])\\s+", sentence) if x.strip()]
+        clauses = [x.strip() for x in re.split(r"(?<=[,;:])\s+", sentence) if x.strip()]
         current = []
 
         def flush():
