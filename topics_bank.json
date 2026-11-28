@@ -210,6 +210,34 @@
       "fact": "In a small 2010 trial of people with irritable bowel syndrome, patients who were told honestly that their pills were placebos reported more symptom relief than patients who received no treatment.",
       "source": "Kaptchuk TJ, et al. Placebos without deception: a randomized controlled trial in irritable bowel syndrome. PLoS ONE, 2010.",
       "caution": "It was a small trial (about 80 people). Do not claim placebos cure disease or replace treatment. Give no medical advice."
+    },
+    {
+      "id": "illusory-truth-effect",
+      "topic": "Why repeated claims can start to feel true",
+      "fact": "In a 1977 experiment, people rated statements they had seen before as more likely to be true. This happened even when some repeated statements were actually false. Researchers call this the illusory truth effect. Repetition can increase familiarity, but it is not evidence that a claim is correct.",
+      "source": "Hasher L, Goldstein D, Toppino T. Frequency and the conference of referential validity. Journal of Verbal Learning and Verbal Behavior, 1977;16:107–112.",
+      "caution": "Say repeated statements were rated as more valid, not that people automatically believe every repeated claim. Emphasize that repetition is not proof."
+    },
+    {
+      "id": "choice-blindness",
+      "topic": "Why people sometimes fail to notice a switched choice",
+      "fact": "In a 2005 experiment, people chose which of two faces they found more attractive. Researchers secretly switched some choices. Some participants did not notice the switch and still explained why they supposedly preferred the face they had not chosen.",
+      "source": "Johansson P, Hall L, Sikström S, Olsson A. Failure to detect mismatches between intention and outcome in a simple decision task. Science, 2005;310(5745):116–119. doi:10.1126/science.1111709.",
+      "caution": "Describe the controlled face-choice experiment. Do not claim people cannot know their own preferences or that every choice is unreliable."
+    },
+    {
+      "id": "hindsight-bias",
+      "topic": "Why the past can seem more predictable after you know the ending",
+      "fact": "In a 1975 experiment, people judged how likely different historical outcomes had seemed. Some were told which outcome actually happened. After learning the result, they tended to overestimate how predictable it had been beforehand. Psychologists call this hindsight bias.",
+      "source": "Fischhoff B. Hindsight is not equal to foresight: The effect of outcome knowledge on judgment under uncertainty. Journal of Experimental Psychology: Human Perception and Performance, 1975;1(3):288–299.",
+      "caution": "Use 'tended to' and describe the experimental judgment task. Do not claim everyone experiences the bias equally."
+    },
+    {
+      "id": "endowment-effect",
+      "topic": "Why owning something can make it seem more valuable",
+      "fact": "In experiments, people who were given a coffee mug often asked for more money to sell it than other people were willing to pay to buy it. Researchers call this the endowment effect. The effect describes a tendency, not a rule for every purchase.",
+      "source": "Kahneman D, Knetsch JL, Thaler RH. Experimental tests of the endowment effect and the Coase theorem. Journal of Political Economy, 1990;98(6):1325–1348. doi:10.1086/261737.",
+      "caution": "Keep the example tied to experimental markets and say 'often' or 'tended to'. Do not imply all owners value all possessions more."
     }
   ]
 }
